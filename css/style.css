@@ -606,6 +606,42 @@ a { text-decoration: none; color: inherit; }
   color: var(--magenta);
 }
 
+.plano-card__price {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.plano-card__currency {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--magenta);
+  margin-top: 8px;
+}
+
+.plano-card__value {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  line-height: 1;
+}
+
+.plano-card__cents {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-top: 4px;
+}
+
+.plano-card__cents small {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--gray-600);
+  display: block;
+}
+
 .plano-card__desc {
   font-size: 0.9rem;
   color: var(--gray-600);
@@ -640,6 +676,71 @@ a { text-decoration: none; color: inherit; }
   background-position: center;
 }
 
+/* Addon */
+.plano-addon {
+  margin-top: 36px;
+}
+
+.plano-addon__inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--white);
+  border: 2px dashed var(--magenta);
+  border-radius: var(--radius-lg);
+  padding: 24px 32px;
+  max-width: 700px;
+  margin: 0 auto;
+  transition: all var(--transition);
+}
+
+.plano-addon__inner:hover {
+  border-style: solid;
+  box-shadow: 0 4px 20px rgba(236, 38, 143, 0.12);
+}
+
+.plano-addon__icon {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  background: var(--rosa);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--magenta);
+}
+
+.plano-addon__icon svg { width: 28px; height: 28px; }
+
+.plano-addon__text { flex: 1; }
+.plano-addon__text h4 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+.plano-addon__text p { font-size: 0.9rem; color: var(--gray-600); line-height: 1.5; }
+
+.plano-addon__price {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.plano-addon__price-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--magenta);
+}
+
+.plano-addon__price-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+
+.plano-addon__price-period {
+  font-size: 0.85rem;
+  color: var(--gray-600);
+}
+
 @media (max-width: 768px) {
   .planos__grid {
     grid-template-columns: 1fr;
@@ -653,6 +754,13 @@ a { text-decoration: none; color: inherit; }
 
   .plano-card--featured:hover {
     transform: translateY(-6px);
+  }
+
+  .plano-addon__inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+    padding: 24px 20px;
   }
 }
 

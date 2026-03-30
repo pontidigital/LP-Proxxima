@@ -569,14 +569,12 @@ a {
   margin-bottom: 28px;
 }
 
-.sobre__image-placeholder {
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-
-.sobre__image-placeholder svg {
+.sobre__image {
   width: 100%;
   height: auto;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  box-shadow: var(--shadow-lg);
 }
 
 /* ==========================================

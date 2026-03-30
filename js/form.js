@@ -9,7 +9,7 @@
   // ====== CONFIGURACAO ======
   var SUPABASE_URL = 'https://xaohhbinykgmzgojszzs.supabase.co';
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhhb2hoYmlueWtnbXpnb2pzenpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4Nzc4ODQsImV4cCI6MjA5MDQ1Mzg4NH0.EUfdalAZ0OZXgYM9spaK6SMG4EcseCJx1nwV5ldpMe4';
-  var RD_EVENT_NAME = 'Cadastro-app-proxxima';
+  var RD_EVENT_NAME = 'Cadastro-LPB2B-Proxxima';
 
   // Rate limit: 1 envio a cada 30 segundos
   var RATE_LIMIT_MS = 30000;

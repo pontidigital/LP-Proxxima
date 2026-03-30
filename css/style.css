@@ -509,6 +509,154 @@ a { text-decoration: none; color: inherit; }
 .card__text { font-size: 0.95rem; color: var(--gray-600); line-height: 1.6; }
 
 /* ==========================================
+   PLANOS
+   ========================================== */
+.planos {
+  padding: 96px 0;
+  background: var(--gray-50);
+}
+
+.planos__subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--gray-600);
+  max-width: 600px;
+  margin: -28px auto 48px;
+  line-height: 1.7;
+}
+
+.planos__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.plano-card {
+  background: var(--white);
+  border: 2px solid var(--cinza);
+  border-radius: var(--radius-lg);
+  padding: 36px 28px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.plano-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+}
+
+.plano-card--featured {
+  border-color: var(--magenta);
+  box-shadow: 0 8px 30px rgba(236, 38, 143, 0.15);
+  transform: scale(1.04);
+}
+
+.plano-card--featured:hover {
+  transform: scale(1.04) translateY(-6px);
+}
+
+.plano-card__tag {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--magenta);
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 6px 20px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.plano-card__header {
+  text-align: center;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--cinza);
+}
+
+.plano-card__badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--azul);
+  background: rgba(62, 64, 149, 0.08);
+  padding: 4px 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.plano-card__speed {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.plano-card__speed span {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--magenta);
+}
+
+.plano-card__desc {
+  font-size: 0.9rem;
+  color: var(--gray-600);
+}
+
+.plano-card__features {
+  list-style: none;
+  flex: 1;
+  margin-bottom: 28px;
+}
+
+.plano-card__features li {
+  padding: 8px 0;
+  font-size: 0.95rem;
+  color: var(--gray-700);
+  padding-left: 28px;
+  position: relative;
+}
+
+.plano-card__features li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 18px;
+  height: 18px;
+  background: var(--rosa);
+  border-radius: 50%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 8l3 3 5-5' stroke='%23EC268F' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size: 14px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+@media (max-width: 768px) {
+  .planos__grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .plano-card--featured {
+    transform: none;
+  }
+
+  .plano-card--featured:hover {
+    transform: translateY(-6px);
+  }
+}
+
+/* ==========================================
    SOBRE
    ========================================== */
 .sobre {

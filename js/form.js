@@ -114,34 +114,99 @@
 
   // ====== ENVIO PARA RD ======
   function sendToRD(data, trafficPayload) {
-    // Usa a API de conversao do RD via script loader
-    if (typeof RDStationForms !== 'undefined' || typeof RdIntegration !== 'undefined') {
-      // RD Station script loaded
+    var conversionData = {
+      conversion_identifier: RD_EVENT_NAME,
+      email: data.email,
+      name: data.nome,
+      personal_phone: data.telefone,
+      cf_cnpj: data.cnpj,
+      city: data.cidade
+    };
+
+    // Incluir traffic_*
+    if (trafficPayload.traffic_source) conversionData.traffic_source = trafficPayload.traffic_source;
+    if (trafficPayload.traffic_medium) conversionData.traffic_medium = trafficPayload.traffic_medium;
+    if (trafficPayload.traffic_campaign) conversionData.traffic_campaign = trafficPayload.traffic_campaign;
+    if (trafficPayload.traffic_value) conversionData.traffic_value = trafficPayload.traffic_value;
+
+    console.log('[RD] dados da conversão', conversionData);
+
+    // Método 1: Via RDStation JS integration (script de tracking já carregado)
+    try {
+      if (typeof RDStationForms !== 'undefined' && RDStationForms.integration) {
+        console.log('[RD] enviando via RDStationForms.integration');
+        RDStationForms.integration('fields', conversionData);
+        return;
+      }
+    } catch (e) {
+      console.warn('[RD] RDStationForms não disponível', e);
     }
 
-    // Envio direto via API de conversao
+    // Método 2: Via window.RdIntegration
+    try {
+      if (typeof window.RdIntegration !== 'undefined') {
+        console.log('[RD] enviando via RdIntegration');
+        window.RdIntegration.post(conversionData);
+        return;
+      }
+    } catch (e) {
+      console.warn('[RD] RdIntegration não disponível', e);
+    }
+
+    // Método 3: Via formulário oculto com integração nativa do RD
+    console.log('[RD] enviando via formulário oculto');
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'https://www.rdstation.com.br/api/1.2/conversions';
+    form.style.display = 'none';
+
+    var fields = {
+      token_rdstation: '42bed1c28d044f4c597832d3997af8c1',
+      identificador: RD_EVENT_NAME,
+      email: data.email,
+      nome: data.nome,
+      telefone: data.telefone,
+      cf_cnpj: data.cnpj,
+      cidade: data.cidade
+    };
+
+    // Adicionar traffic_*
+    if (trafficPayload.traffic_source) fields.traffic_source = trafficPayload.traffic_source;
+    if (trafficPayload.traffic_medium) fields.traffic_medium = trafficPayload.traffic_medium;
+    if (trafficPayload.traffic_campaign) fields.traffic_campaign = trafficPayload.traffic_campaign;
+    if (trafficPayload.traffic_value) fields.traffic_value = trafficPayload.traffic_value;
+
+    Object.keys(fields).forEach(function (key) {
+      var input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = fields[key];
+      form.appendChild(input);
+    });
+
+    // Enviar via iframe oculto para evitar redirect
+    var iframe = document.createElement('iframe');
+    iframe.name = 'rd_iframe_' + Date.now();
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    form.target = iframe.name;
+    document.body.appendChild(form);
+    form.submit();
+
+    // Limpar após envio
+    setTimeout(function () {
+      if (form.parentNode) form.parentNode.removeChild(form);
+      if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+      console.log('[RD] formulário oculto enviado');
+    }, 3000);
+
+    // Método 4: Backup via API direta (pode falhar por CORS)
     var rdPayload = {
       event_type: 'CONVERSION',
       event_family: 'CDP',
-      payload: {
-        conversion_identifier: RD_EVENT_NAME,
-        email: data.email,
-        name: data.nome,
-        personal_phone: data.telefone,
-        cf_cnpj: data.cnpj,
-        city: data.cidade
-      }
+      payload: conversionData
     };
 
-    // Incluir traffic_* no payload
-    if (trafficPayload.traffic_source) rdPayload.payload.traffic_source = trafficPayload.traffic_source;
-    if (trafficPayload.traffic_medium) rdPayload.payload.traffic_medium = trafficPayload.traffic_medium;
-    if (trafficPayload.traffic_campaign) rdPayload.payload.traffic_campaign = trafficPayload.traffic_campaign;
-    if (trafficPayload.traffic_value) rdPayload.payload.traffic_value = trafficPayload.traffic_value;
-
-    console.log('[RD] payload completo', rdPayload);
-
-    // Envia via API do RD
     fetch('https://api.rd.services/platform/conversions?api_key=42bed1c28d044f4c597832d3997af8c1', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -149,13 +214,15 @@
     })
     .then(function (res) {
       if (res.ok) {
-        console.log('[RD] conversao enviada com sucesso');
+        console.log('[RD] API direta: conversão enviada com sucesso');
       } else {
-        console.error('[RD] erro ao enviar conversao', res.status);
+        return res.text().then(function (body) {
+          console.warn('[RD] API direta: erro ' + res.status, body);
+        });
       }
     })
     .catch(function (err) {
-      console.error('[RD] erro de rede', err);
+      console.warn('[RD] API direta: CORS ou erro de rede (esperado no browser)', err.message);
     });
   }
 

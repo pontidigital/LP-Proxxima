@@ -280,7 +280,8 @@ a {
   position: relative;
   padding: 120px 0 80px;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--white) 0%, #fdf2f7 50%, var(--rosa) 100%);
+  background: linear-gradient(135deg, rgba(62, 64, 149, 0.92) 0%, rgba(236, 38, 143, 0.85) 100%),
+              url('../assets/hero-bg.jpg') center/cover no-repeat;
   min-height: 90vh;
   display: flex;
   align-items: center;
@@ -301,13 +302,13 @@ a {
   font-size: 2.75rem;
   font-weight: 800;
   line-height: 1.15;
-  color: var(--gray-900);
+  color: var(--white);
   margin-bottom: 20px;
 }
 
 .hero__subtitle {
   font-size: 1.15rem;
-  color: var(--gray-600);
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.7;
   margin-bottom: 32px;
 }
@@ -322,7 +323,7 @@ a {
   right: -200px;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(236, 38, 143, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
   border-radius: 50%;
   z-index: 0;
   pointer-events: none;

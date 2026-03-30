@@ -7,9 +7,8 @@
   'use strict';
 
   // ====== CONFIGURACAO ======
-  // TODO: Substituir pela URL e key reais do Supabase
-  var SUPABASE_URL = 'https://SEU_PROJETO.supabase.co';
-  var SUPABASE_ANON_KEY = 'SUA_ANON_KEY';
+  var SUPABASE_URL = 'https://xaohhbinykgmzgojszzs.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhhb2hoYmlueWtnbXpnb2pzenpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4Nzc4ODQsImV4cCI6MjA5MDQ1Mzg4NH0.EUfdalAZ0OZXgYM9spaK6SMG4EcseCJx1nwV5ldpMe4';
   var RD_EVENT_NAME = 'Cadastro-app-proxxima';
 
   // Rate limit: 1 envio a cada 30 segundos

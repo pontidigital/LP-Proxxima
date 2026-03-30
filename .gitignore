@@ -6,3 +6,6 @@ node_modules/
 *.log
 .agents/
 .claude/
+
+# Local Netlify folder
+.netlify

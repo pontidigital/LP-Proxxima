@@ -1,5 +1,6 @@
 /**
- * Main JS - Header, mobile menu, scroll reveal, smooth scroll
+ * Main JS - Header, mobile menu, scroll reveal (staggered + directional),
+ * FAQ smooth accordion, step connector animation, parallax
  */
 
 (function () {
@@ -29,7 +30,6 @@
       mobileMenu.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
       menuToggle.setAttribute('aria-expanded', !isOpen);
 
-      // Animate hamburger
       var spans = menuToggle.querySelectorAll('span');
       if (!isOpen) {
         spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
@@ -42,7 +42,6 @@
       }
     });
 
-    // Close menu on link click
     mobileMenu.querySelectorAll('a').forEach(function (link) {
       link.addEventListener('click', function () {
         mobileMenu.setAttribute('aria-hidden', 'true');
@@ -55,7 +54,7 @@
     });
   }
 
-  // ====== SCROLL REVEAL ======
+  // ====== SCROLL REVEAL (staggered + directional) ======
   var revealElements = document.querySelectorAll('[data-reveal]');
 
   if ('IntersectionObserver' in window) {
@@ -75,13 +74,55 @@
       revealObserver.observe(el);
     });
   } else {
-    // Fallback: show all immediately
     revealElements.forEach(function (el) {
       el.classList.add('revealed');
     });
   }
 
-  // ====== SMOOTH SCROLL (fallback for browsers without CSS scroll-behavior) ======
+  // ====== FAQ SMOOTH ACCORDION ======
+  var faqItems = document.querySelectorAll('.faq__item');
+
+  faqItems.forEach(function (item) {
+    var btn = item.querySelector('.faq__question');
+
+    btn.addEventListener('click', function () {
+      var isOpen = item.classList.contains('faq__item--open');
+
+      // Close all others
+      faqItems.forEach(function (other) {
+        if (other !== item) {
+          other.classList.remove('faq__item--open');
+          other.querySelector('.faq__question').setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Toggle current
+      item.classList.toggle('faq__item--open');
+      btn.setAttribute('aria-expanded', !isOpen);
+    });
+  });
+
+  // ====== STEP CONNECTOR ANIMATION ======
+  var connectorLines = document.querySelectorAll('.step__connector-line');
+
+  if ('IntersectionObserver' in window && connectorLines.length > 0) {
+    var connectorObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animated');
+          connectorObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    connectorLines.forEach(function (line) {
+      connectorObserver.observe(line);
+    });
+  }
+
+  // ====== SMOOTH SCROLL ======
   document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
     anchor.addEventListener('click', function (e) {
       var target = document.querySelector(this.getAttribute('href'));

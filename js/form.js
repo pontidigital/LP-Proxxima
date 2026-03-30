@@ -24,19 +24,19 @@
     },
     email: function (val) {
       if (!val.trim()) return 'Preencha este campo para continuar.';
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim())) return 'Informe um e-mail valido. Ex.: seu@email.com.br';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim())) return 'Informe um e-mail válido. Ex.: seu@email.com.br';
       return '';
     },
     telefone: function (val) {
       if (!val.trim()) return 'Preencha este campo para continuar.';
       var digits = val.replace(/\D/g, '');
-      if (digits.length < 10 || digits.length > 11) return 'Informe um telefone valido com DDD.';
+      if (digits.length < 10 || digits.length > 11) return 'Informe um telefone válido com DDD.';
       return '';
     },
     cnpj: function (val) {
       if (!val.trim()) return 'Preencha este campo para continuar.';
       var digits = val.replace(/\D/g, '');
-      if (digits.length !== 14) return 'Informe um CNPJ valido. Ex.: 00.000.000/0000-00';
+      if (digits.length !== 14) return 'Informe um CNPJ válido. Ex.: 00.000.000/0000-00';
       return '';
     },
     cidade: function (val) {
@@ -260,7 +260,7 @@
 
       } catch (err) {
         console.error('[Form] erro no envio', err);
-        alert('Nao foi possivel enviar sua solicitacao. Tente novamente ou entre em contato pelo e-mail falecom@proxxima.net.');
+        alert('Não foi possível enviar sua solicitação. Tente novamente ou entre em contato pelo e-mail falecom@proxxima.net.');
         submitBtn.classList.remove('form__submit--loading');
         submitBtn.disabled = false;
       }

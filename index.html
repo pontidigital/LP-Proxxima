@@ -3,14 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Proxxima Telecom | Internet Empresarial</title>
-  <meta name="description" content="Internet empresarial com suporte dedicado, estabilidade e proximidade. Solicite contato comercial e descubra a solucao ideal para sua empresa.">
-  <meta property="og:title" content="Proxxima Telecom | Internet Empresarial">
-  <meta property="og:description" content="Conectividade estavel, suporte dedicado e a proximidade de quem entende o seu negocio.">
+  <title>Proxxima Telecom | Internet Empresarial com Suporte Dedicado</title>
+  <meta name="description" content="Internet empresarial com suporte dedicado, estabilidade e proximidade. Solicite contato comercial e descubra a solução ideal para sua empresa.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://lp-proxxima.netlify.app/">
+  <meta property="og:title" content="Proxxima Telecom | Internet Empresarial com Suporte Dedicado">
+  <meta property="og:description" content="Conectividade estável, suporte dedicado e a proximidade de quem entende o seu negócio.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="assets/og-image.png">
+  <meta property="og:url" content="https://lp-proxxima.netlify.app/">
+  <meta property="og:image" content="https://lp-proxxima.netlify.app/assets/og-image.png">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Schema.org LocalBusiness -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TelecommunicationsService",
+    "name": "Proxxima Telecom",
+    "legalName": "PROXXIMA TELECOMUNICACOES S.A.",
+    "description": "Provedor de internet empresarial com suporte dedicado, estabilidade e proximidade.",
+    "url": "https://lp-proxxima.netlify.app",
+    "email": "falecom@proxxima.net",
+    "telephone": "",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Av. Prefeito Severino Bezerra Cabral, 255",
+      "addressLocality": "Campina Grande",
+      "addressRegion": "PB",
+      "addressCountry": "BR"
+    },
+    "sameAs": [
+      "https://www.instagram.com/souproxxima/",
+      "https://www.linkedin.com/in/proxxima-telecom-91b3a8235/",
+      "https://www.facebook.com/souproxximat"
+    ],
+    "slogan": "Sua internet mais perto de você"
+  }
+  </script>
+
+  <link rel="icon" type="image/svg+xml" href="assets/logo-proxxima.svg">
+
+  <!-- Preload critical resources -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="assets/hero-bg.jpg" as="image">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -20,13 +57,9 @@
   <header class="header" id="header">
     <div class="container header__inner">
       <a href="#" class="header__logo" aria-label="Proxxima Telecom">
-        <svg class="header__logo-svg" viewBox="0 0 220 48" aria-hidden="true">
-          <text x="0" y="38" class="logo-text-pink">pro</text>
-          <text x="72" y="38" class="logo-text-blue">X</text>
-          <text x="100" y="38" class="logo-text-pink">ima</text>
-        </svg>
+        <img src="assets/logo-proxxima.svg" alt="Proxxima Telecom" class="header__logo-img">
       </a>
-      <nav class="header__nav">
+      <nav class="header__nav" aria-label="Navegação principal">
         <a href="#diferenciais" class="header__link">Diferenciais</a>
         <a href="#sobre" class="header__link">Sobre</a>
         <a href="#como-funciona" class="header__link">Como funciona</a>
@@ -37,9 +70,8 @@
         <span></span><span></span><span></span>
       </button>
     </div>
-    <!-- Mobile menu -->
     <div class="header__mobile-menu" aria-hidden="true">
-      <nav class="header__mobile-nav">
+      <nav class="header__mobile-nav" aria-label="Menu mobile">
         <a href="#diferenciais" class="header__mobile-link">Diferenciais</a>
         <a href="#sobre" class="header__mobile-link">Sobre</a>
         <a href="#como-funciona" class="header__mobile-link">Como funciona</a>
@@ -51,13 +83,20 @@
 
   <!-- ========== HERO ========== -->
   <section class="hero" id="hero">
+    <!-- Partículas decorativas -->
+    <div class="hero__particle hero__particle--1" aria-hidden="true"></div>
+    <div class="hero__particle hero__particle--2" aria-hidden="true"></div>
+    <div class="hero__particle hero__particle--3" aria-hidden="true"></div>
+    <div class="hero__particle hero__particle--4" aria-hidden="true"></div>
+    <div class="hero__particle hero__particle--5" aria-hidden="true"></div>
+
     <div class="container hero__inner">
       <div class="hero__content">
-        <h1 class="hero__title">A internet que a sua empresa merece, com o atendimento que ela precisa.</h1>
-        <p class="hero__subtitle">Conectividade estavel, suporte dedicado e a proximidade de quem entende o seu negocio. Descubra por que empresas de todo o Brasil confiam na Proxxima.</p>
-        <a href="#formulario" class="btn btn--primary btn--lg hero__cta-mobile">Solicitar contato comercial</a>
+        <h1 class="hero__title hero-animate" data-hero-delay="1">A internet que a sua empresa merece, com o atendimento que ela precisa.</h1>
+        <p class="hero__subtitle hero-animate" data-hero-delay="2">Conectividade estável, suporte dedicado e a proximidade de quem entende o seu negócio. Descubra por que empresas de todo o Brasil confiam na Proxxima.</p>
+        <a href="#formulario" class="btn btn--primary btn--lg hero__cta-mobile hero-animate" data-hero-delay="3">Solicitar contato comercial</a>
       </div>
-      <div class="hero__form" id="formulario">
+      <div class="hero__form hero-animate" data-hero-delay="2" id="formulario">
         <div class="form-card">
           <h2 class="form-card__title">Solicite contato comercial</h2>
           <p class="form-card__subtitle">Preencha os dados abaixo e nossa equipe entra em contato.</p>
@@ -68,17 +107,17 @@
             </div>
             <div class="form__group">
               <label for="nome" class="form__label">Nome *</label>
-              <input type="text" id="nome" name="nome" class="form__input" placeholder="Seu nome completo" required>
+              <input type="text" id="nome" name="nome" class="form__input" placeholder="Seu nome completo" required autocomplete="name">
               <span class="form__error" data-error="nome"></span>
             </div>
             <div class="form__group">
               <label for="email" class="form__label">E-mail *</label>
-              <input type="email" id="email" name="email" class="form__input" placeholder="seu@email.com.br" required>
+              <input type="email" id="email" name="email" class="form__input" placeholder="seu@email.com.br" required autocomplete="email">
               <span class="form__error" data-error="email"></span>
             </div>
             <div class="form__group">
               <label for="telefone" class="form__label">Telefone *</label>
-              <input type="tel" id="telefone" name="telefone" class="form__input" placeholder="(00) 00000-0000" required>
+              <input type="tel" id="telefone" name="telefone" class="form__input" placeholder="(00) 00000-0000" required autocomplete="tel">
               <span class="form__error" data-error="telefone"></span>
             </div>
             <div class="form__group">
@@ -88,11 +127,11 @@
             </div>
             <div class="form__group">
               <label for="cidade" class="form__label">Cidade *</label>
-              <input type="text" id="cidade" name="cidade" class="form__input" placeholder="Em qual cidade sua empresa esta?" required>
+              <input type="text" id="cidade" name="cidade" class="form__input" placeholder="Em qual cidade sua empresa está?" required>
               <span class="form__error" data-error="cidade"></span>
             </div>
             <button type="submit" class="btn btn--primary btn--full form__submit" id="form-submit">
-              <span class="form__submit-text">Enviar solicitacao</span>
+              <span class="form__submit-text">Enviar solicitação</span>
               <span class="form__submit-loading" aria-hidden="true">
                 <svg class="spinner" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="31.4 31.4" /></svg>
               </span>
@@ -102,47 +141,46 @@
             <div class="form-card__success-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
             </div>
-            <h3>Recebemos sua solicitacao!</h3>
+            <h3>Recebemos sua solicitação!</h3>
             <p>Nossa equipe comercial vai entrar em contato em breve. Obrigado por escolher a Proxxima.</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="hero__bg-shape" aria-hidden="true"></div>
   </section>
 
   <!-- ========== DIFERENCIAIS ========== -->
   <section class="diferenciais" id="diferenciais">
     <div class="container">
-      <h2 class="section-title">Por que escolher a Proxxima para sua empresa?</h2>
+      <h2 class="section-title" data-reveal>Por que escolher a Proxxima para sua empresa?</h2>
       <div class="diferenciais__grid">
-        <div class="card" data-reveal>
+        <div class="card" data-reveal data-reveal-delay="0">
           <div class="card__icon">
-            <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/><path d="M16 24h16M24 16v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg viewBox="0 0 48 48" fill="none"><path d="M24 4a20 20 0 110 40 20 20 0 010-40z" stroke="currentColor" stroke-width="2"/><path d="M17 20a3 3 0 013-3h8a3 3 0 013 3v8a3 3 0 01-3 3h-8a3 3 0 01-3-3v-8z" stroke="currentColor" stroke-width="2"/><path d="M20 17v-3M28 17v-3M20 31v3M28 31v3M17 20h-3M17 28h-3M31 20h3M31 28h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </div>
           <h3 class="card__title">Suporte dedicado para empresas</h3>
-          <p class="card__text">Sua empresa nao pode esperar. Conte com um canal de atendimento exclusivo para clientes corporativos, com equipe preparada para resolver o que for preciso.</p>
+          <p class="card__text">Sua empresa não pode esperar. Conte com um canal de atendimento exclusivo para clientes corporativos, com equipe preparada para resolver o que for preciso.</p>
         </div>
-        <div class="card" data-reveal>
+        <div class="card" data-reveal data-reveal-delay="1">
           <div class="card__icon">
-            <svg viewBox="0 0 48 48" fill="none"><rect x="4" y="8" width="40" height="32" rx="4" stroke="currentColor" stroke-width="2"/><path d="M4 20h40M16 28h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg viewBox="0 0 48 48" fill="none"><path d="M6 24c0-10 8-18 18-18s18 8 18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 24c0-7 5-12 12-12s12 5 12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18 24c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="24" cy="24" r="3" fill="currentColor"/><path d="M24 27v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20 37h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </div>
-          <h3 class="card__title">Estabilidade que o seu negocio exige</h3>
-          <p class="card__text">Links dimensionados para a demanda real da sua operacao, com monitoramento proativo para evitar interrupcoes que afetam seus resultados.</p>
+          <h3 class="card__title">Estabilidade que o seu negócio exige</h3>
+          <p class="card__text">Links dimensionados para a demanda real da sua operação, com monitoramento proativo para evitar interrupções que afetam seus resultados.</p>
         </div>
-        <div class="card" data-reveal>
+        <div class="card" data-reveal data-reveal-delay="2">
           <div class="card__icon">
-            <svg viewBox="0 0 48 48" fill="none"><path d="M24 4C13 4 4 13 4 24s9 20 20 20 20-9 20-20S35 4 24 4z" stroke="currentColor" stroke-width="2"/><path d="M24 14v10l7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg viewBox="0 0 48 48" fill="none"><path d="M24 4l4 8h8l-6 6 2 8-8-4-8 4 2-8-6-6h8l4-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 34c0 4 5.4 8 12 8s12-4 12-8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </div>
           <h3 class="card__title">Proximidade de verdade</h3>
-          <p class="card__text">Nao somos um 0800 distante. A Proxxima atua perto de voce, com equipe local e agilidade para atender sua empresa quando ela mais precisa.</p>
+          <p class="card__text">Não somos um 0800 distante. A Proxxima atua perto de você, com equipe local e agilidade para atender sua empresa quando ela mais precisa.</p>
         </div>
-        <div class="card" data-reveal>
+        <div class="card" data-reveal data-reveal-delay="3">
           <div class="card__icon">
-            <svg viewBox="0 0 48 48" fill="none"><path d="M8 40V20l16-12 16 12v20H8z" stroke="currentColor" stroke-width="2"/><path d="M18 40V28h12v12" stroke="currentColor" stroke-width="2"/></svg>
+            <svg viewBox="0 0 48 48" fill="none"><path d="M6 12l18-8 18 8v4H6v-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 16v18M18 16v18M26 16v18M34 16v18M42 16v18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 34h36v4H6v-4z" stroke="currentColor" stroke-width="2"/><circle cx="24" cy="10" r="2" fill="currentColor"/></svg>
           </div>
-          <h3 class="card__title">Solucoes sob medida</h3>
-          <p class="card__text">Cada empresa tem uma necessidade diferente. Trabalhamos para entender a sua e oferecer a conectividade certa, sem pacotes genericos.</p>
+          <h3 class="card__title">Soluções sob medida</h3>
+          <p class="card__text">Cada empresa tem uma necessidade diferente. Trabalhamos para entender a sua e oferecer a conectividade certa, sem pacotes genéricos.</p>
         </div>
       </div>
     </div>
@@ -151,14 +189,14 @@
   <!-- ========== SOBRE ========== -->
   <section class="sobre" id="sobre">
     <div class="container sobre__inner">
-      <div class="sobre__content" data-reveal>
+      <div class="sobre__content" data-reveal="left">
         <h2 class="section-title">Sobre a Proxxima</h2>
-        <p>A Proxxima Telecom nasceu com um proposito claro: estar mais perto de quem a gente conecta. Nao acreditamos em distancia entre o provedor e o cliente &mdash; por isso, cada empresa que confia em nos recebe atencao real, de gente que entende o valor de uma conexao que funciona.</p>
-        <p>Somos um provedor de internet que une tecnologia e cuidado. Nossa equipe conhece os desafios de manter uma operacao funcionando sem interrupcoes, e trabalha com agilidade para garantir que a sua empresa nunca fique desconectada do que importa.</p>
-        <p>Na Proxxima, generosidade nao e so um valor no papel. E a forma como atendemos, como ouvimos e como agimos. Porque internet nao e so velocidade &mdash; e confianca.</p>
+        <p>A Proxxima Telecom nasceu com um propósito claro: estar mais perto de quem a gente conecta. Não acreditamos em distância entre o provedor e o cliente &mdash; por isso, cada empresa que confia em nós recebe atenção real, de gente que entende o valor de uma conexão que funciona.</p>
+        <p>Somos um provedor de internet que une tecnologia e cuidado. Nossa equipe conhece os desafios de manter uma operação funcionando sem interrupções, e trabalha com agilidade para garantir que a sua empresa nunca fique desconectada do que importa.</p>
+        <p>Na Proxxima, generosidade não é só um valor no papel. É a forma como atendemos, como ouvimos e como agimos. Porque internet não é só velocidade &mdash; é confiança.</p>
       </div>
-      <div class="sobre__visual" data-reveal>
-        <img src="assets/about.jpg" alt="Equipe Proxxima Telecom trabalhando em parceria com clientes empresariais" class="sobre__image" loading="lazy" width="800" height="534">
+      <div class="sobre__visual" data-reveal="right">
+        <img src="assets/about.jpg" alt="Equipe da Proxxima Telecom trabalhando em parceria com clientes empresariais" class="sobre__image" loading="lazy" width="800" height="534">
       </div>
     </div>
   </section>
@@ -166,24 +204,37 @@
   <!-- ========== COMO FUNCIONA ========== -->
   <section class="como-funciona" id="como-funciona">
     <div class="container">
-      <h2 class="section-title">Como contratar a Proxxima para sua empresa</h2>
+      <h2 class="section-title" data-reveal>Como contratar a Proxxima para sua empresa</h2>
       <div class="steps">
-        <div class="step" data-reveal>
-          <div class="step__number">1</div>
-          <h3 class="step__title">Preencha o formulario</h3>
-          <p class="step__text">Informe os dados da sua empresa para que nossa equipe entenda o que voce precisa.</p>
+        <div class="step" data-reveal data-reveal-delay="0">
+          <div class="step__image-wrap">
+            <img src="assets/step1.jpg" alt="Pessoa preenchendo formulário de contato no computador" class="step__image" loading="lazy" width="400" height="267">
+          </div>
+          <div class="step__number" data-count="1">1</div>
+          <h3 class="step__title">Preencha o formulário</h3>
+          <p class="step__text">Informe os dados da sua empresa para que nossa equipe entenda o que você precisa.</p>
         </div>
-        <div class="step__connector" aria-hidden="true"></div>
-        <div class="step" data-reveal>
-          <div class="step__number">2</div>
+        <div class="step__connector" aria-hidden="true">
+          <div class="step__connector-line"></div>
+        </div>
+        <div class="step" data-reveal data-reveal-delay="1">
+          <div class="step__image-wrap">
+            <img src="assets/step2.jpg" alt="Consultor cumprimentando cliente em reunião de negócios" class="step__image" loading="lazy" width="400" height="267">
+          </div>
+          <div class="step__number" data-count="2">2</div>
           <h3 class="step__title">Receba uma proposta personalizada</h3>
-          <p class="step__text">Um consultor comercial vai entrar em contato para apresentar a melhor solucao para o seu negocio.</p>
+          <p class="step__text">Um consultor comercial vai entrar em contato para apresentar a melhor solução para o seu negócio.</p>
         </div>
-        <div class="step__connector" aria-hidden="true"></div>
-        <div class="step" data-reveal>
-          <div class="step__number">3</div>
+        <div class="step__connector" aria-hidden="true">
+          <div class="step__connector-line"></div>
+        </div>
+        <div class="step" data-reveal data-reveal-delay="2">
+          <div class="step__image-wrap">
+            <img src="assets/step3.jpg" alt="Técnico realizando instalação de equipamentos de rede" class="step__image" loading="lazy" width="400" height="267">
+          </div>
+          <div class="step__number" data-count="3">3</div>
           <h3 class="step__title">Conecte sua empresa</h3>
-          <p class="step__text">Cuidamos de toda a instalacao e ativacao para que sua operacao nao pare.</p>
+          <p class="step__text">Cuidamos de toda a instalação e ativação para que sua operação não pare.</p>
         </div>
       </div>
     </div>
@@ -192,54 +243,55 @@
   <!-- ========== FAQ ========== -->
   <section class="faq" id="faq">
     <div class="container">
-      <h2 class="section-title">Perguntas frequentes</h2>
+      <h2 class="section-title" data-reveal>Perguntas frequentes</h2>
       <div class="faq__list">
-        <details class="faq__item" data-reveal>
-          <summary class="faq__question">
+        <div class="faq__item" data-reveal data-reveal-delay="0">
+          <button class="faq__question" aria-expanded="false">
             A Proxxima atende empresas de qualquer porte?
             <svg class="faq__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-          </summary>
+          </button>
           <div class="faq__answer">
-            <p>Sim. Atendemos desde pequenas empresas ate operacoes de grande porte, sempre com solucoes dimensionadas para a necessidade de cada cliente.</p>
+            <p>Sim. Atendemos desde pequenas empresas até operações de grande porte, sempre com soluções dimensionadas para a necessidade de cada cliente.</p>
           </div>
-        </details>
-        <details class="faq__item" data-reveal>
-          <summary class="faq__question">
-            Qual a diferenca entre os planos residenciais e empresariais?
+        </div>
+        <div class="faq__item" data-reveal data-reveal-delay="1">
+          <button class="faq__question" aria-expanded="false">
+            Qual a diferença entre os planos residenciais e empresariais?
             <svg class="faq__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-          </summary>
+          </button>
           <div class="faq__answer">
-            <p>Os planos empresariais oferecem recursos como suporte prioritario, links com maior estabilidade e atendimento dedicado, pensados para quem nao pode ter interrupcoes na operacao.</p>
+            <p>Os planos empresariais oferecem recursos como suporte prioritário, links com maior estabilidade e atendimento dedicado, pensados para quem não pode ter interrupções na operação.</p>
           </div>
-        </details>
-        <details class="faq__item" data-reveal>
-          <summary class="faq__question">
+        </div>
+        <div class="faq__item" data-reveal data-reveal-delay="2">
+          <button class="faq__question" aria-expanded="false">
             A Proxxima atende na minha cidade?
             <svg class="faq__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-          </summary>
+          </button>
           <div class="faq__answer">
-            <p>Estamos em constante expansao. Preencha o formulario com o nome da sua cidade e nossa equipe vai verificar a disponibilidade na sua regiao.</p>
+            <p>Estamos em constante expansão. Preencha o formulário com o nome da sua cidade e nossa equipe vai verificar a disponibilidade na sua região.</p>
           </div>
-        </details>
-        <details class="faq__item" data-reveal>
-          <summary class="faq__question">
+        </div>
+        <div class="faq__item" data-reveal data-reveal-delay="3">
+          <button class="faq__question" aria-expanded="false">
             Como funciona o suporte para empresas?
             <svg class="faq__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-          </summary>
+          </button>
           <div class="faq__answer">
-            <p>Clientes corporativos contam com um canal de atendimento dedicado, com equipe preparada para dar suporte com agilidade e resolver questoes tecnicas de forma rapida.</p>
+            <p>Clientes corporativos contam com um canal de atendimento dedicado, com equipe preparada para dar suporte com agilidade e resolver questões técnicas de forma rápida.</p>
           </div>
-        </details>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ========== CTA FINAL ========== -->
   <section class="cta-final">
+    <div class="cta-final__bg" aria-hidden="true"></div>
     <div class="container cta-final__inner">
-      <h2 class="cta-final__title">Sua empresa merece uma internet que esta do seu lado.</h2>
-      <p class="cta-final__subtitle">Preencha o formulario e receba o contato de um consultor pronto para entender o que o seu negocio precisa.</p>
-      <a href="#formulario" class="btn btn--white btn--lg">Quero falar com um consultor</a>
+      <h2 class="cta-final__title" data-reveal>Sua empresa merece uma internet que está do seu lado.</h2>
+      <p class="cta-final__subtitle" data-reveal>Preencha o formulário e receba o contato de um consultor pronto para entender o que o seu negócio precisa.</p>
+      <a href="#formulario" class="btn btn--white btn--lg" data-reveal>Quero falar com um consultor</a>
     </div>
   </section>
 
@@ -247,27 +299,29 @@
   <footer class="footer">
     <div class="container footer__inner">
       <div class="footer__brand">
-        <svg class="footer__logo" viewBox="0 0 220 48" aria-hidden="true">
-          <text x="0" y="38" class="logo-text-white">pro</text>
-          <text x="72" y="38" class="logo-text-white-light">X</text>
-          <text x="100" y="38" class="logo-text-white">ima</text>
-        </svg>
-        <p class="footer__slogan">sua internet mais perto de voce</p>
+        <img src="assets/logo-proxxima.svg" alt="Proxxima Telecom" class="footer__logo">
+        <p class="footer__slogan">sua internet mais perto de você</p>
+        <p class="footer__legal-name">PROXXIMA TELECOMUNICAÇÕES S.A.</p>
+        <p class="footer__cnpj">CNPJ: 40.120.343/0001-04</p>
       </div>
       <div class="footer__contact">
         <h4>Contato</h4>
         <a href="mailto:falecom@proxxima.net" class="footer__link">falecom@proxxima.net</a>
+        <address class="footer__address">
+          Av. Prefeito Severino Bezerra Cabral, 255<br>
+          José Pinheiro, Campina Grande - PB
+        </address>
       </div>
       <div class="footer__social">
         <h4>Redes sociais</h4>
         <div class="footer__social-links">
-          <a href="https://www.instagram.com/souproxxima/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="footer__social-link">
+          <a href="https://www.instagram.com/souproxxima/" target="_blank" rel="noopener noreferrer" aria-label="Instagram da Proxxima Telecom" class="footer__social-link">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
           </a>
-          <a href="https://www.linkedin.com/in/proxxima-telecom-91b3a8235/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="footer__social-link">
+          <a href="https://www.linkedin.com/in/proxxima-telecom-91b3a8235/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn da Proxxima Telecom" class="footer__social-link">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
           </a>
-          <a href="https://www.facebook.com/souproxximat" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="footer__social-link">
+          <a href="https://www.facebook.com/souproxximat" target="_blank" rel="noopener noreferrer" aria-label="Facebook da Proxxima Telecom" class="footer__social-link">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
           </a>
         </div>
@@ -275,7 +329,7 @@
     </div>
     <div class="footer__bottom">
       <div class="container">
-        <p>&copy; 2026 Proxxima Telecom. Todos os direitos reservados.</p>
+        <p>&copy; 2026 Proxxima Telecom. Todos os direitos reservados. | <a href="privacidade.html" class="footer__bottom-link">Política de Privacidade</a></p>
       </div>
     </div>
   </footer>
@@ -283,8 +337,8 @@
   <!-- RD Station Script -->
   <script type="text/javascript" async src="https://d335luupugsy2.cloudfront.net/js/loader-scripts/64ef7f6a-1382-4850-98ff-f090816aa8d5-loader.js"></script>
 
-  <script src="js/utm.js"></script>
-  <script src="js/form.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/utm.js" defer></script>
+  <script src="js/form.js" defer></script>
+  <script src="js/main.js" defer></script>
 </body>
 </html>

@@ -39,6 +39,10 @@
       if (digits.length !== 14) return 'Informe um CNPJ válido. Ex.: 00.000.000/0000-00';
       return '';
     },
+    segmento: function (val) {
+      if (!val || !val.trim()) return 'Selecione um segmento.';
+      return '';
+    },
     cidade: function (val) {
       if (!val.trim()) return 'Preencha este campo para continuar.';
       return '';
@@ -53,11 +57,11 @@
     var input = document.getElementById(name);
     var errorSpan = document.querySelector('[data-error="' + name + '"]');
     if (message) {
-      input.classList.add('form__input--error');
+      input.classList.add(input.tagName === 'SELECT' ? 'form__select--error' : 'form__input--error');
       errorSpan.textContent = message;
       errorSpan.classList.add('form__error--visible');
     } else {
-      input.classList.remove('form__input--error');
+      input.classList.remove('form__input--error', 'form__select--error');
       errorSpan.textContent = '';
       errorSpan.classList.remove('form__error--visible');
     }
@@ -65,7 +69,7 @@
 
   function validateForm(data) {
     var isValid = true;
-    var fields = ['nome', 'email', 'telefone', 'cnpj', 'cidade'];
+    var fields = ['nome', 'email', 'telefone', 'cnpj', 'segmento', 'cidade'];
 
     fields.forEach(function (field) {
       var error = validateField(field, data[field] || '');
@@ -120,6 +124,7 @@
       name: data.nome,
       personal_phone: data.telefone,
       cf_cnpj: data.cnpj,
+      cf_segmento: data.segmento,
       city: data.cidade
     };
 
@@ -167,6 +172,7 @@
       nome: data.nome,
       telefone: data.telefone,
       cf_cnpj: data.cnpj,
+      cf_segmento: data.segmento,
       cidade: data.cidade
     };
 
@@ -247,7 +253,7 @@
     });
 
     // Validacao em tempo real (blur)
-    ['nome', 'email', 'telefone', 'cnpj', 'cidade'].forEach(function (field) {
+    ['nome', 'email', 'telefone', 'cnpj', 'segmento', 'cidade'].forEach(function (field) {
       var input = document.getElementById(field);
       input.addEventListener('blur', function () {
         var error = validateField(field, this.value);
@@ -286,6 +292,7 @@
         email: document.getElementById('email').value,
         telefone: document.getElementById('telefone').value,
         cnpj: document.getElementById('cnpj').value,
+        segmento: document.getElementById('segmento').value,
         cidade: document.getElementById('cidade').value
       };
 
@@ -307,6 +314,7 @@
           email: data.email.trim(),
           telefone: data.telefone.trim(),
           cnpj: data.cnpj.trim(),
+          segmento: data.segmento.trim(),
           cidade: data.cidade.trim(),
           utm_source: trafficPayload.traffic_source || null,
           utm_medium: trafficPayload.traffic_medium || null,

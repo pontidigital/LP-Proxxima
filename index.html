@@ -127,6 +127,16 @@
               <span class="form__error" data-error="cnpj"></span>
             </div>
             <div class="form__group">
+              <label for="segmento" class="form__label">Segmento *</label>
+              <select id="segmento" name="segmento" class="form__input form__select" required>
+                <option value="" disabled selected>Selecione o segmento</option>
+                <option value="Governo">Governo</option>
+                <option value="Empresas">Empresas</option>
+                <option value="Provedores">Provedores</option>
+              </select>
+              <span class="form__error" data-error="segmento"></span>
+            </div>
+            <div class="form__group">
               <label for="cidade" class="form__label">Cidade *</label>
               <input type="text" id="cidade" name="cidade" class="form__input" placeholder="Em qual cidade sua empresa está?" required>
               <span class="form__error" data-error="cidade"></span>

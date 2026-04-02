@@ -28,7 +28,8 @@
     "telephone": "",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Av. Prefeito Severino Bezerra Cabral, 255",
+      "streetAddress": "Av. Pres. Getúlio Vargas, 575 - Prata",
+      "postalCode": "58400-052",
       "addressLocality": "Campina Grande",
       "addressRegion": "PB",
       "addressCountry": "BR"
@@ -60,7 +61,7 @@
         <img src="assets/logo-proxxima.svg" alt="Proxxima Telecom" class="header__logo-img">
       </a>
       <nav class="header__nav" aria-label="Navegação principal">
-        <a href="#planos" class="header__link">Planos</a>
+        <a href="#solucoes" class="header__link">Soluções</a>
         <a href="#diferenciais" class="header__link">Diferenciais</a>
         <a href="#sobre" class="header__link">Sobre</a>
         <a href="#como-funciona" class="header__link">Como funciona</a>
@@ -94,11 +95,12 @@
     <div class="container hero__inner">
       <div class="hero__content">
         <h1 class="hero__title hero-animate" data-hero-delay="1">A internet que a sua empresa merece, com o atendimento que ela precisa.</h1>
-        <p class="hero__subtitle hero-animate" data-hero-delay="2">Conectividade estável, suporte dedicado e a proximidade de quem entende o seu negócio. Descubra por que empresas de todo o Brasil confiam na Proxxima.</p>
+        <p class="hero__subtitle hero-animate" data-hero-delay="2">Conectividade estável, suporte dedicado e a proximidade de quem entende o seu negócio. Descubra porque as empresas confiam na Proxxima.</p>
         <a href="#formulario" class="btn btn--primary btn--lg hero__cta-mobile hero-animate" data-hero-delay="3">Solicitar contato comercial</a>
       </div>
       <div class="hero__form hero-animate" data-hero-delay="2" id="formulario">
         <div class="form-card">
+          <img src="assets/logo-proxxima.svg" alt="Proxxima Telecom" class="form-card__logo">
           <h2 class="form-card__title">Solicite contato comercial</h2>
           <p class="form-card__subtitle">Preencha os dados abaixo e nossa equipe entra em contato.</p>
           <form id="lead-form" class="form" novalidate>
@@ -160,91 +162,41 @@
     </div>
   </section>
 
-  <!-- ========== PLANOS ========== -->
-  <section class="planos" id="planos">
+  <!-- ========== SOLUÇÕES ========== -->
+  <section class="planos" id="solucoes">
     <div class="container">
-      <h2 class="section-title" data-reveal>Planos Empresariais</h2>
-      <p class="planos__subtitle" data-reveal>Escolha a velocidade ideal para a sua empresa. Todos os planos incluem suporte dedicado e instalação sem custo.</p>
+      <h2 class="section-title" data-reveal>Soluções para cada segmento</h2>
       <div class="planos__grid">
         <div class="plano-card" data-reveal data-reveal-delay="0">
           <div class="plano-card__header">
-            <span class="plano-card__badge">Empresarial</span>
-            <h3 class="plano-card__speed">400<span>MEGA</span></h3>
-            <div class="plano-card__price">
-              <span class="plano-card__currency">R$</span>
-              <span class="plano-card__value">89</span>
-              <span class="plano-card__cents">,99<small>/mês</small></span>
-            </div>
-            <p class="plano-card__desc">Ideal para pequenas empresas e escritórios</p>
+            <span class="plano-card__badge">Governo</span>
+            <h3 class="plano-card__segment-title">Governo que não pode parar.</h3>
           </div>
-          <ul class="plano-card__features">
-            <li>Velocidade de 400 Mbps</li>
-            <li>Suporte técnico dedicado</li>
-            <li>Instalação gratuita</li>
-            <li>Monitoramento proativo</li>
-          </ul>
-          <a href="#formulario" class="btn btn--primary btn--full">Contratar agora</a>
+          <div class="plano-card__body">
+            <p>Serviços públicos exigem conectividade sem falhas. A Proxxima oferece links dedicados, SLA contratual e conformidade com a legislação de licitações &mdash; do município à esfera federal. Infraestrutura confiável para quem serve a população.</p>
+          </div>
+          <a href="#formulario" class="btn btn--primary btn--full">Solicitar contato</a>
         </div>
-        <div class="plano-card plano-card--featured" data-reveal data-reveal-delay="1">
-          <div class="plano-card__tag">Mais popular</div>
+        <div class="plano-card" data-reveal data-reveal-delay="1">
           <div class="plano-card__header">
-            <span class="plano-card__badge">Empresarial</span>
-            <h3 class="plano-card__speed">700<span>MEGA</span></h3>
-            <div class="plano-card__price">
-              <span class="plano-card__currency">R$</span>
-              <span class="plano-card__value">129</span>
-              <span class="plano-card__cents">,99<small>/mês</small></span>
-            </div>
-            <p class="plano-card__desc">Para empresas em crescimento com alta demanda</p>
+            <span class="plano-card__badge">Empresas</span>
+            <h3 class="plano-card__segment-title">Sua empresa merece uma internet que funciona.</h3>
           </div>
-          <ul class="plano-card__features">
-            <li>Velocidade de 700 Mbps</li>
-            <li>Suporte técnico prioritário</li>
-            <li>Instalação gratuita</li>
-            <li>Monitoramento proativo</li>
-            <li>IP dedicado sob consulta</li>
-          </ul>
-          <a href="#formulario" class="btn btn--primary btn--full">Contratar agora</a>
+          <div class="plano-card__body">
+            <p>Link dedicado simétrico, latência ultrabaixa e suporte 24/7. A Proxxima entrega a banda que você contratou &mdash; 100% do tempo &mdash; com SLA garantido e ativação em até 10 dias úteis. Conectividade de nível corporativo para negócios de todos os portes.</p>
+          </div>
+          <a href="#formulario" class="btn btn--primary btn--full">Solicitar contato</a>
         </div>
         <div class="plano-card" data-reveal data-reveal-delay="2">
           <div class="plano-card__header">
-            <span class="plano-card__badge">Empresarial</span>
-            <h3 class="plano-card__speed">1<span>GIGA+</span></h3>
-            <div class="plano-card__price">
-              <span class="plano-card__currency">R$</span>
-              <span class="plano-card__value">199</span>
-              <span class="plano-card__cents">,99<small>/mês</small></span>
-            </div>
-            <p class="plano-card__desc">Máxima performance para operações intensivas</p>
+            <span class="plano-card__badge">Provedores</span>
+            <h3 class="plano-card__segment-title">Cresça mais. Invista menos.</h3>
           </div>
-          <ul class="plano-card__features">
-            <li>Velocidade de 1 Gbps+</li>
-            <li>Suporte técnico VIP</li>
-            <li>Instalação gratuita</li>
-            <li>Monitoramento proativo 24h</li>
-            <li>IP dedicado sob consulta</li>
-            <li>SLA empresarial</li>
-          </ul>
-          <a href="#formulario" class="btn btn--primary btn--full">Contratar agora</a>
+          <div class="plano-card__body">
+            <p>Última milha (Last Mile), colocation, link atacado e backbone de alto desempenho. A Proxxima é a infraestrutura por trás dos melhores provedores regionais. Amplie sua cobertura, reduza custos e entregue mais qualidade aos seus clientes.</p>
+          </div>
+          <a href="#formulario" class="btn btn--primary btn--full">Solicitar contato</a>
         </div>
-      </div>
-      <!-- Addon -->
-      <div class="plano-addon" data-reveal>
-        <div class="plano-addon__inner">
-          <div class="plano-addon__icon">
-            <svg viewBox="0 0 48 48" fill="none"><rect x="6" y="14" width="36" height="24" rx="4" stroke="currentColor" stroke-width="2"/><path d="M14 22h4M30 22h4M14 30h4M30 30h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20 14V10a4 4 0 018 0v4" stroke="currentColor" stroke-width="2"/><circle cx="24" cy="26" r="3" stroke="currentColor" stroke-width="2"/></svg>
-          </div>
-          <div class="plano-addon__text">
-            <h4>Roteador Dual WAN</h4>
-            <p>Adicione um roteador Dual WAN ao seu plano para conexão ainda mais estável e redundância de rede.</p>
-          </div>
-          <div class="plano-addon__price">
-            <span class="plano-addon__price-label">+ R$</span>
-            <span class="plano-addon__price-value">29,99</span>
-            <span class="plano-addon__price-period">/mês</span>
-          </div>
-        </div>
-      </div>
       </div>
     </div>
   </section>
@@ -291,9 +243,12 @@
     <div class="container sobre__inner">
       <div class="sobre__content" data-reveal="left">
         <h2 class="section-title">Sobre a Proxxima</h2>
-        <p>A Proxxima Telecom nasceu com um propósito claro: estar mais perto de quem a gente conecta. Não acreditamos em distância entre o provedor e o cliente &mdash; por isso, cada empresa que confia em nós recebe atenção real, de gente que entende o valor de uma conexão que funciona.</p>
-        <p>Somos um provedor de internet que une tecnologia e cuidado. Nossa equipe conhece os desafios de manter uma operação funcionando sem interrupções, e trabalha com agilidade para garantir que a sua empresa nunca fique desconectada do que importa.</p>
-        <p>Na Proxxima, generosidade não é só um valor no papel. É a forma como atendemos, como ouvimos e como agimos. Porque internet não é só velocidade &mdash; é confiança.</p>
+        <p>A Proxxima nasceu com um jeito próprio de fazer as coisas. Mais próxima, mais humana e, principalmente, mais responsável com quem confia na gente.</p>
+        <p>Aqui, a conexão vai muito além da internet. É sobre estar presente, resolver de verdade e não deixar ninguém na mão. A gente acredita em relações construídas com transparência, respeito e compromisso no dia a dia, não só no discurso.</p>
+        <p>Valorizamos a agilidade, mas sem perder o cuidado. A tecnologia, mas sem esquecer das pessoas. Cada atendimento, cada solução e cada entrega carrega isso: responsabilidade, proximidade e vontade de fazer bem feito.</p>
+        <p>Nosso time entende que por trás de cada empresa tem uma operação que não pode parar. Por isso, trabalhamos com dedicação e atenção aos detalhes, buscando sempre entregar uma experiência confiável e consistente.</p>
+        <p>A generosidade também faz parte de quem somos. Está na escuta, na disponibilidade e na forma como a gente se coloca para ajudar. Porque, pra gente, não existe solução padrão quando o assunto é gente.</p>
+        <p>A Proxxima é sobre isso. Conectar com qualidade, mas principalmente com propósito, respeito e verdade.</p>
       </div>
       <div class="sobre__visual" data-reveal="right">
         <img src="assets/about.jpg" alt="Equipe da Proxxima Telecom trabalhando em parceria com clientes empresariais" class="sobre__image" loading="lazy" width="800" height="534">
@@ -369,34 +324,25 @@
             <svg class="faq__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="faq__answer">
-            <p>Estamos presentes em mais de 120 cidades nos estados de Pernambuco, Paraíba, Rio Grande do Norte e Ceará, em constante expansão. Preencha o formulário com o nome da sua cidade e nossa equipe vai verificar a disponibilidade na sua região.</p>
+            <p>Estamos presentes em mais de 120 cidades nos estados de Pernambuco, Paraíba, Rio Grande do Norte, Ceará e Bahia, em constante expansão. Preencha o formulário com o nome da sua cidade e nossa equipe vai verificar a disponibilidade na sua região.</p>
           </div>
         </div>
         <div class="faq__item" data-reveal data-reveal-delay="3">
-          <button class="faq__question" aria-expanded="false">
-            Qual é o número de contato do suporte técnico?
-            <svg class="faq__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-          </button>
-          <div class="faq__answer">
-            <p>Nosso suporte está disponível pelo <strong>0800 083 1155</strong>, todos os dias, a qualquer hora, por ligação ou WhatsApp.</p>
-          </div>
-        </div>
-        <div class="faq__item" data-reveal data-reveal-delay="4">
           <button class="faq__question" aria-expanded="false">
             Quais documentos preciso para contratar?
             <svg class="faq__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="faq__answer">
-            <p>Para contratação é necessário ter RG, CPF e comprovante de endereço. Após a aprovação cadastral, será agendada a instalação com presença do titular para assinatura do contrato.</p>
+            <p>Para contratação são necessários: Contrato Social, RG e CPF do responsável legal da empresa, cartão CNPJ, e-mail e telefone.</p>
           </div>
         </div>
-        <div class="faq__item" data-reveal data-reveal-delay="5">
+        <div class="faq__item" data-reveal data-reveal-delay="4">
           <button class="faq__question" aria-expanded="false">
-            Como funciona o pagamento das faturas?
+            Como solicitar o contato comercial?
             <svg class="faq__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="faq__answer">
-            <p>É possível pagar através do App Proxxima (Play Store/App Store) ou pelo Portal do Cliente em portal.proxxima.net. Aceitamos boleto bancário, débito em conta e cartão de crédito.</p>
+            <p>Basta preencher o formulário no topo desta página com os dados da sua empresa. Nossa equipe comercial entrará em contato para entender suas necessidades e apresentar a melhor solução.</p>
           </div>
         </div>
       </div>
@@ -426,8 +372,8 @@
         <h4>Contato</h4>
         <a href="mailto:falecom@proxxima.net" class="footer__link">falecom@proxxima.net</a>
         <address class="footer__address">
-          Av. Prefeito Severino Bezerra Cabral, 255<br>
-          José Pinheiro, Campina Grande - PB
+          Av. Pres. Getúlio Vargas, 575 - Prata<br>
+          Campina Grande - PB, 58400-052
         </address>
       </div>
       <div class="footer__social">

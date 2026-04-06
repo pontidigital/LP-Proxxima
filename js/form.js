@@ -116,6 +116,34 @@
     }
   }
 
+  // ====== ENVIO PARA N8N (WEBHOOK) ======
+  function sendToN8N(data) {
+    var payload = {
+      name: data.nome.trim(),
+      email: data.email.trim(),
+      mobile_phone: data.telefone.trim(),
+      cf_cnpj: data.cnpj.trim(),
+      cf_segmento: data.segmento.trim(),
+      city: data.cidade.trim()
+    };
+
+    fetch('https://n8n.proxxima.net/webhook/rd-formulario-b2b', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(function (res) {
+      if (res.ok) {
+        console.log('[N8N] webhook enviado com sucesso');
+      } else {
+        console.warn('[N8N] erro ' + res.status);
+      }
+    })
+    .catch(function (err) {
+      console.warn('[N8N] erro de rede', err.message);
+    });
+  }
+
   // ====== ENVIO PARA RD ======
   function sendToRD(data, trafficPayload) {
     var conversionData = {
@@ -326,6 +354,9 @@
         // Enviar para Supabase
         await sendToSupabase(supabaseData);
 
+        // Enviar para N8N (webhook)
+        sendToN8N(data);
+
         // Enviar para RD
         sendToRD(data, trafficPayload);
 
@@ -335,7 +366,7 @@
 
       } catch (err) {
         console.error('[Form] erro no envio', err);
-        alert('Não foi possível enviar sua solicitação. Tente novamente ou entre em contato pelo e-mail falecom@proxxima.net.');
+        alert('Não foi possível enviar sua solicitação. Tente novamente ou entre em contato pelo e-mail corporativo@proxxima.net.');
         submitBtn.classList.remove('form__submit--loading');
         submitBtn.disabled = false;
       }

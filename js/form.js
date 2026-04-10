@@ -117,7 +117,9 @@
   }
 
   // ====== ENVIO PARA N8N (WEBHOOK) ======
-  function sendToN8N(data) {
+  // N8N é o canal principal — envia dados + UTMs para o backend,
+  // que repassa ao RD Station server-side (sem CORS).
+  function sendToN8N(data, trafficPayload) {
     var payload = {
       name: data.nome.trim(),
       email: data.email.trim(),
@@ -127,7 +129,15 @@
       city: data.cidade.trim()
     };
 
-    fetch('https://n8n.proxxima.net/webhook/rd-formulario-b2b', {
+    // Incluir UTMs para o N8N repassar ao RD
+    if (trafficPayload) {
+      if (trafficPayload.traffic_source) payload.traffic_source = trafficPayload.traffic_source;
+      if (trafficPayload.traffic_medium) payload.traffic_medium = trafficPayload.traffic_medium;
+      if (trafficPayload.traffic_campaign) payload.traffic_campaign = trafficPayload.traffic_campaign;
+      if (trafficPayload.traffic_value) payload.traffic_value = trafficPayload.traffic_value;
+    }
+
+    return fetch('https://n8n.proxxima.net/webhook/rd-formulario-b2b', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -138,13 +148,19 @@
       } else {
         console.warn('[N8N] erro ' + res.status);
       }
+      return res;
     })
     .catch(function (err) {
       console.warn('[N8N] erro de rede', err.message);
+      throw err;
     });
   }
 
-  // ====== ENVIO PARA RD ======
+  // ====== ENVIO PARA RD (CANAL INDEPENDENTE) ======
+  // Envio direto para o RD Station via integração client-side.
+  // Funciona em paralelo com o N8N — são 2 canais independentes.
+  var RD_TOKEN = '42bed1c28d044f4c597832d3997af8c1';
+
   function sendToRD(data, trafficPayload) {
     var conversionData = {
       conversion_identifier: RD_EVENT_NAME,
@@ -164,7 +180,7 @@
 
     console.log('[RD] dados da conversão', conversionData);
 
-    // Método 1: Via RDStation JS integration (script de tracking já carregado)
+    // Método 1: Via RDStationForms JS (script async carregado na página)
     try {
       if (typeof RDStationForms !== 'undefined' && RDStationForms.integration) {
         console.log('[RD] enviando via RDStationForms.integration');
@@ -186,15 +202,15 @@
       console.warn('[RD] RdIntegration não disponível', e);
     }
 
-    // Método 3: Via formulário oculto com integração nativa do RD
-    console.log('[RD] enviando via formulário oculto');
+    // Método 3: Formulário oculto via iframe (garantido, sem CORS)
+    console.log('[RD] script ainda não carregou, enviando via formulário oculto');
     var form = document.createElement('form');
     form.method = 'POST';
     form.action = 'https://www.rdstation.com.br/api/1.2/conversions';
     form.style.display = 'none';
 
     var fields = {
-      token_rdstation: '42bed1c28d044f4c597832d3997af8c1',
+      token_rdstation: RD_TOKEN,
       identificador: RD_EVENT_NAME,
       email: data.email,
       nome: data.nome,
@@ -204,7 +220,6 @@
       cidade: data.cidade
     };
 
-    // Adicionar traffic_*
     if (trafficPayload.traffic_source) fields.traffic_source = trafficPayload.traffic_source;
     if (trafficPayload.traffic_medium) fields.traffic_medium = trafficPayload.traffic_medium;
     if (trafficPayload.traffic_campaign) fields.traffic_campaign = trafficPayload.traffic_campaign;
@@ -218,7 +233,6 @@
       form.appendChild(input);
     });
 
-    // Enviar via iframe oculto para evitar redirect
     var iframe = document.createElement('iframe');
     iframe.name = 'rd_iframe_' + Date.now();
     iframe.style.display = 'none';
@@ -227,37 +241,11 @@
     document.body.appendChild(form);
     form.submit();
 
-    // Limpar após envio
     setTimeout(function () {
       if (form.parentNode) form.parentNode.removeChild(form);
       if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-      console.log('[RD] formulário oculto enviado');
+      console.log('[RD] formulário oculto enviado com sucesso');
     }, 3000);
-
-    // Método 4: Backup via API direta (pode falhar por CORS)
-    var rdPayload = {
-      event_type: 'CONVERSION',
-      event_family: 'CDP',
-      payload: conversionData
-    };
-
-    fetch('https://api.rd.services/platform/conversions?api_key=42bed1c28d044f4c597832d3997af8c1', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(rdPayload)
-    })
-    .then(function (res) {
-      if (res.ok) {
-        console.log('[RD] API direta: conversão enviada com sucesso');
-      } else {
-        return res.text().then(function (body) {
-          console.warn('[RD] API direta: erro ' + res.status, body);
-        });
-      }
-    })
-    .catch(function (err) {
-      console.warn('[RD] API direta: CORS ou erro de rede (esperado no browser)', err.message);
-    });
   }
 
   // ====== INIT ======
@@ -354,10 +342,10 @@
         // Enviar para Supabase
         await sendToSupabase(supabaseData);
 
-        // Enviar para N8N (webhook)
-        sendToN8N(data);
+        // Canal 1: N8N (webhook server-side)
+        sendToN8N(data, trafficPayload);
 
-        // Enviar para RD
+        // Canal 2: RD Station (client-side direto)
         sendToRD(data, trafficPayload);
 
         // Sucesso

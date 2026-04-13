@@ -106,13 +106,35 @@
         'Content-Type': 'application/json',
         'apikey': SUPABASE_ANON_KEY,
         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Prefer': 'return=minimal'
+        'Prefer': 'return=representation'
       },
       body: JSON.stringify(data)
     });
 
     if (!response.ok) {
       throw new Error('Supabase error: ' + response.status);
+    }
+
+    var rows = await response.json();
+    return rows[0].id;
+  }
+
+  // ====== ATUALIZAR SYNC STATUS NO SUPABASE ======
+  async function updateSyncStatus(leadId, syncData) {
+    var response = await fetch(SUPABASE_URL + '/rest/v1/leads?id=eq.' + leadId, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify(syncData)
+    });
+
+    if (!response.ok) {
+      console.error('[Sync] falha ao atualizar status:', response.status);
+    } else {
+      console.log('[Sync] status atualizado para lead', leadId);
     }
   }
 
@@ -126,7 +148,8 @@
       mobile_phone: data.telefone.trim(),
       cf_cnpj: data.cnpj.trim(),
       cf_segmento: data.segmento.trim(),
-      city: data.cidade.trim()
+      city: data.cidade.trim(),
+      identificador: RD_EVENT_NAME
     };
 
     if (trafficPayload) {
@@ -322,6 +345,16 @@
 
         if (rdOk) console.log('[Form] RD OK');
         else console.error('[Form] RD falhou', results[2].reason);
+
+        // Atualiza sync status no Supabase (N8N repassa ao RD server-side)
+        if (supabaseOk) {
+          var leadId = results[0].value;
+          await updateSyncStatus(leadId, {
+            synced_n8n: n8nOk,
+            synced_rd: n8nOk,
+            synced_at: n8nOk ? new Date().toISOString() : null
+          });
+        }
 
         // Sucesso se pelo menos um canal recebeu o lead
         if (supabaseOk || n8nOk || rdOk) {

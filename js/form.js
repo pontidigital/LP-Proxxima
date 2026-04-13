@@ -139,8 +139,6 @@
   }
 
   // ====== ENVIO PARA N8N (WEBHOOK) ======
-  // N8N é o canal principal — envia dados + UTMs para o backend,
-  // que repassa ao RD Station server-side (sem CORS).
   async function sendToN8N(data, trafficPayload) {
     var payload = {
       name: data.nome.trim(),
@@ -197,9 +195,13 @@
 
     // Método 1: Via RdIntegration (script async carregado na página)
     if (typeof window.RdIntegration !== 'undefined') {
-      console.log('[RD] enviando via RdIntegration');
-      window.RdIntegration.post(payload);
-      return;
+      try {
+        console.log('[RD] enviando via RdIntegration');
+        window.RdIntegration.post(payload);
+        return;
+      } catch (err) {
+        console.warn('[RD] RdIntegration.post falhou, tentando fallback', err);
+      }
     }
 
     // Método 2: Formulário oculto via iframe (sem CORS, sempre funciona)
@@ -346,13 +348,13 @@
         if (rdOk) console.log('[Form] RD OK');
         else console.error('[Form] RD falhou', results[2].reason);
 
-        // Atualiza sync status no Supabase (N8N repassa ao RD server-side)
+        // Atualiza sync status no Supabase (N8N e RD são canais independentes)
         if (supabaseOk) {
           var leadId = results[0].value;
           await updateSyncStatus(leadId, {
             synced_n8n: n8nOk,
-            synced_rd: n8nOk,
-            synced_at: n8nOk ? new Date().toISOString() : null
+            synced_rd: rdOk,
+            synced_at: (n8nOk || rdOk) ? new Date().toISOString() : null
           });
         }
 

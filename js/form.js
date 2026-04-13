@@ -106,7 +106,7 @@
         'Content-Type': 'application/json',
         'apikey': SUPABASE_ANON_KEY,
         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Prefer': 'return=minimal'
+        'Prefer': 'return=representation'
       },
       body: JSON.stringify(data)
     });
@@ -114,12 +114,32 @@
     if (!response.ok) {
       throw new Error('Supabase error: ' + response.status);
     }
+
+    var rows = await response.json();
+    return rows[0];
+  }
+
+  // ====== ATUALIZAR STATUS DE SYNC NO SUPABASE ======
+  async function updateSyncStatus(leadId, channel) {
+    var patch = { synced_at: new Date().toISOString() };
+    patch['synced_' + channel] = true;
+
+    await fetch(SUPABASE_URL + '/rest/v1/leads?id=eq.' + leadId, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(patch)
+    });
   }
 
   // ====== ENVIO PARA N8N (WEBHOOK) ======
   // N8N é o canal principal — envia dados + UTMs para o backend,
   // que repassa ao RD Station server-side (sem CORS).
-  function sendToN8N(data, trafficPayload) {
+  async function sendToN8N(data, trafficPayload) {
     var payload = {
       name: data.nome.trim(),
       email: data.email.trim(),
@@ -129,7 +149,6 @@
       city: data.cidade.trim()
     };
 
-    // Incluir UTMs para o N8N repassar ao RD
     if (trafficPayload) {
       if (trafficPayload.traffic_source) payload.traffic_source = trafficPayload.traffic_source;
       if (trafficPayload.traffic_medium) payload.traffic_medium = trafficPayload.traffic_medium;
@@ -137,115 +156,80 @@
       if (trafficPayload.traffic_value) payload.traffic_value = trafficPayload.traffic_value;
     }
 
-    return fetch('https://n8n.proxxima.net/webhook/rd-formulario-b2b', {
+    var res = await fetch('https://n8n.proxxima.net/webhook/rd-formulario-b2b', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
-    })
-    .then(function (res) {
-      if (res.ok) {
-        console.log('[N8N] webhook enviado com sucesso');
-      } else {
-        console.warn('[N8N] erro ' + res.status);
-      }
-      return res;
-    })
-    .catch(function (err) {
-      console.warn('[N8N] erro de rede', err.message);
-      throw err;
     });
+
+    if (!res.ok) {
+      throw new Error('[N8N] erro ' + res.status);
+    }
+    console.log('[N8N] webhook enviado com sucesso');
   }
 
-  // ====== ENVIO PARA RD (CANAL INDEPENDENTE) ======
-  // Envio direto para o RD Station via integração client-side.
-  // Funciona em paralelo com o N8N — são 2 canais independentes.
+  // ====== ENVIO PARA RD (API DIRETA) ======
   var RD_TOKEN = '42bed1c28d044f4c597832d3997af8c1';
 
-  function sendToRD(data, trafficPayload) {
-    var conversionData = {
-      conversion_identifier: RD_EVENT_NAME,
-      email: data.email,
-      name: data.nome,
-      personal_phone: data.telefone,
-      cf_cnpj: data.cnpj,
-      cf_segmento: data.segmento,
-      city: data.cidade
-    };
-
-    // Incluir traffic_*
-    if (trafficPayload.traffic_source) conversionData.traffic_source = trafficPayload.traffic_source;
-    if (trafficPayload.traffic_medium) conversionData.traffic_medium = trafficPayload.traffic_medium;
-    if (trafficPayload.traffic_campaign) conversionData.traffic_campaign = trafficPayload.traffic_campaign;
-    if (trafficPayload.traffic_value) conversionData.traffic_value = trafficPayload.traffic_value;
-
-    console.log('[RD] dados da conversão', conversionData);
-
-    // Método 1: Via RDStationForms JS (script async carregado na página)
-    try {
-      if (typeof RDStationForms !== 'undefined' && RDStationForms.integration) {
-        console.log('[RD] enviando via RDStationForms.integration');
-        RDStationForms.integration('fields', conversionData);
-        return;
-      }
-    } catch (e) {
-      console.warn('[RD] RDStationForms não disponível', e);
-    }
-
-    // Método 2: Via window.RdIntegration
-    try {
-      if (typeof window.RdIntegration !== 'undefined') {
-        console.log('[RD] enviando via RdIntegration');
-        window.RdIntegration.post(conversionData);
-        return;
-      }
-    } catch (e) {
-      console.warn('[RD] RdIntegration não disponível', e);
-    }
-
-    // Método 3: Formulário oculto via iframe (garantido, sem CORS)
-    console.log('[RD] script ainda não carregou, enviando via formulário oculto');
-    var form = document.createElement('form');
-    form.method = 'POST';
-    form.action = 'https://www.rdstation.com.br/api/1.2/conversions';
-    form.style.display = 'none';
-
-    var fields = {
+  async function sendToRD(data, trafficPayload) {
+    var payload = {
       token_rdstation: RD_TOKEN,
       identificador: RD_EVENT_NAME,
-      email: data.email,
-      nome: data.nome,
-      telefone: data.telefone,
-      cf_cnpj: data.cnpj,
-      cf_segmento: data.segmento,
-      cidade: data.cidade
+      email: data.email.trim(),
+      nome: data.nome.trim(),
+      telefone: data.telefone.trim(),
+      cf_cnpj: data.cnpj.trim(),
+      cf_segmento: data.segmento.trim(),
+      cidade: data.cidade.trim()
     };
 
-    if (trafficPayload.traffic_source) fields.traffic_source = trafficPayload.traffic_source;
-    if (trafficPayload.traffic_medium) fields.traffic_medium = trafficPayload.traffic_medium;
-    if (trafficPayload.traffic_campaign) fields.traffic_campaign = trafficPayload.traffic_campaign;
-    if (trafficPayload.traffic_value) fields.traffic_value = trafficPayload.traffic_value;
+    if (trafficPayload) {
+      if (trafficPayload.traffic_source) payload.c_utmSource = trafficPayload.traffic_source;
+      if (trafficPayload.traffic_medium) payload.c_utmMedium = trafficPayload.traffic_medium;
+      if (trafficPayload.traffic_campaign) payload.c_utmCampaign = trafficPayload.traffic_campaign;
+      if (trafficPayload.traffic_value) payload.c_utmTerm = trafficPayload.traffic_value;
+    }
 
-    Object.keys(fields).forEach(function (key) {
-      var input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = fields[key];
-      form.appendChild(input);
+    console.log('[RD] dados da conversão', payload);
+
+    // Método 1: Via RdIntegration (script async carregado na página)
+    if (typeof window.RdIntegration !== 'undefined') {
+      console.log('[RD] enviando via RdIntegration');
+      window.RdIntegration.post(payload);
+      return;
+    }
+
+    // Método 2: Formulário oculto via iframe (sem CORS, sempre funciona)
+    console.log('[RD] RdIntegration não disponível, enviando via formulário oculto');
+    await new Promise(function (resolve) {
+      var form = document.createElement('form');
+      form.method = 'POST';
+      form.action = 'https://www.rdstation.com.br/api/1.2/conversions';
+      form.style.display = 'none';
+
+      Object.keys(payload).forEach(function (key) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = payload[key];
+        form.appendChild(input);
+      });
+
+      var iframe = document.createElement('iframe');
+      iframe.name = 'rd_iframe_' + Date.now();
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+      form.target = iframe.name;
+      document.body.appendChild(form);
+      form.submit();
+
+      setTimeout(function () {
+        if (form.parentNode) form.parentNode.removeChild(form);
+        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+        console.log('[RD] formulário oculto enviado');
+        resolve();
+      }, 3000);
     });
-
-    var iframe = document.createElement('iframe');
-    iframe.name = 'rd_iframe_' + Date.now();
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-    form.target = iframe.name;
-    document.body.appendChild(form);
-    form.submit();
-
-    setTimeout(function () {
-      if (form.parentNode) form.parentNode.removeChild(form);
-      if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-      console.log('[RD] formulário oculto enviado com sucesso');
-    }, 3000);
   }
 
   // ====== INIT ======
@@ -339,16 +323,29 @@
           created_at: new Date().toISOString()
         };
 
-        // Enviar para Supabase
-        await sendToSupabase(supabaseData);
+        // Enviar para Supabase (retorna o lead com id)
+        var lead = await sendToSupabase(supabaseData);
+        var leadId = lead.id;
 
-        // Canal 1: N8N (webhook server-side)
-        sendToN8N(data, trafficPayload);
+        // Canal 1: N8N (webhook server-side — envia ao RD via backend)
+        try {
+          await sendToN8N(data, trafficPayload);
+          updateSyncStatus(leadId, 'n8n');
+          console.log('[Form] N8N sincronizado');
+        } catch (n8nErr) {
+          console.error('[Form] N8N falhou, será reenviado depois', n8nErr);
+        }
 
-        // Canal 2: RD Station (client-side direto)
-        sendToRD(data, trafficPayload);
+        // Canal 2: RD Station (client-side direto — redundância)
+        try {
+          await sendToRD(data, trafficPayload);
+          updateSyncStatus(leadId, 'rd');
+          console.log('[Form] RD sincronizado');
+        } catch (rdErr) {
+          console.error('[Form] RD falhou, será reenviado depois', rdErr);
+        }
 
-        // Sucesso
+        // Sucesso (lead salvo no Supabase, mesmo que N8N/RD falhem)
         form.style.display = 'none';
         successDiv.hidden = false;
 

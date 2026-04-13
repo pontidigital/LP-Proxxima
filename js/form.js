@@ -106,7 +106,7 @@
         'Content-Type': 'application/json',
         'apikey': SUPABASE_ANON_KEY,
         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Prefer': 'return=representation'
+        'Prefer': 'return=minimal'
       },
       body: JSON.stringify(data)
     });
@@ -114,26 +114,6 @@
     if (!response.ok) {
       throw new Error('Supabase error: ' + response.status);
     }
-
-    var rows = await response.json();
-    return rows[0];
-  }
-
-  // ====== ATUALIZAR STATUS DE SYNC NO SUPABASE ======
-  async function updateSyncStatus(leadId, channel) {
-    var patch = { synced_at: new Date().toISOString() };
-    patch['synced_' + channel] = true;
-
-    await fetch(SUPABASE_URL + '/rest/v1/leads?id=eq.' + leadId, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify(patch)
-    });
   }
 
   // ====== ENVIO PARA N8N (WEBHOOK) ======
@@ -323,31 +303,33 @@
           created_at: new Date().toISOString()
         };
 
-        // Enviar para Supabase (retorna o lead com id)
-        var lead = await sendToSupabase(supabaseData);
-        var leadId = lead.id;
+        // Dispara os 3 canais em paralelo — sucesso se ao menos 1 funcionar
+        var results = await Promise.allSettled([
+          sendToSupabase(supabaseData),
+          sendToN8N(data, trafficPayload),
+          sendToRD(data, trafficPayload)
+        ]);
 
-        // Canal 1: N8N (webhook server-side — envia ao RD via backend)
-        try {
-          await sendToN8N(data, trafficPayload);
-          updateSyncStatus(leadId, 'n8n');
-          console.log('[Form] N8N sincronizado');
-        } catch (n8nErr) {
-          console.error('[Form] N8N falhou, será reenviado depois', n8nErr);
+        var supabaseOk = results[0].status === 'fulfilled';
+        var n8nOk = results[1].status === 'fulfilled';
+        var rdOk = results[2].status === 'fulfilled';
+
+        if (supabaseOk) console.log('[Form] Supabase OK');
+        else console.error('[Form] Supabase falhou', results[0].reason);
+
+        if (n8nOk) console.log('[Form] N8N OK');
+        else console.error('[Form] N8N falhou', results[1].reason);
+
+        if (rdOk) console.log('[Form] RD OK');
+        else console.error('[Form] RD falhou', results[2].reason);
+
+        // Sucesso se pelo menos um canal recebeu o lead
+        if (supabaseOk || n8nOk || rdOk) {
+          form.style.display = 'none';
+          successDiv.hidden = false;
+        } else {
+          throw new Error('Todos os canais falharam');
         }
-
-        // Canal 2: RD Station (client-side direto — redundância)
-        try {
-          await sendToRD(data, trafficPayload);
-          updateSyncStatus(leadId, 'rd');
-          console.log('[Form] RD sincronizado');
-        } catch (rdErr) {
-          console.error('[Form] RD falhou, será reenviado depois', rdErr);
-        }
-
-        // Sucesso (lead salvo no Supabase, mesmo que N8N/RD falhem)
-        form.style.display = 'none';
-        successDiv.hidden = false;
 
       } catch (err) {
         console.error('[Form] erro no envio', err);

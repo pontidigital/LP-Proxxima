@@ -170,28 +170,30 @@
   var RD_TOKEN = '42bed1c28d044f4c597832d3997af8c1';
 
   async function sendToRD(data, trafficPayload) {
-    var params = new URLSearchParams();
-    params.append('token_rdstation', RD_TOKEN);
-    params.append('identificador', RD_EVENT_NAME);
-    params.append('email', data.email.trim());
-    params.append('nome', data.nome.trim());
-    params.append('telefone', data.telefone.trim());
-    params.append('cf_cnpj', data.cnpj.trim());
-    params.append('cf_segmento', data.segmento.trim());
-    params.append('cidade', data.cidade.trim());
+    var payload = {
+      token_rdstation: RD_TOKEN,
+      identificador: RD_EVENT_NAME,
+      email: data.email.trim(),
+      nome: data.nome.trim(),
+      telefone: data.telefone.trim(),
+      cf_cnpj: data.cnpj.trim(),
+      cf_segmento: data.segmento.trim(),
+      cidade: data.cidade.trim()
+    };
 
     if (trafficPayload) {
-      if (trafficPayload.traffic_source) params.append('c_utmSource', trafficPayload.traffic_source);
-      if (trafficPayload.traffic_medium) params.append('c_utmMedium', trafficPayload.traffic_medium);
-      if (trafficPayload.traffic_campaign) params.append('c_utmCampaign', trafficPayload.traffic_campaign);
-      if (trafficPayload.traffic_value) params.append('c_utmTerm', trafficPayload.traffic_value);
+      if (trafficPayload.traffic_source) payload.c_utmSource = trafficPayload.traffic_source;
+      if (trafficPayload.traffic_medium) payload.c_utmMedium = trafficPayload.traffic_medium;
+      if (trafficPayload.traffic_campaign) payload.c_utmCampaign = trafficPayload.traffic_campaign;
+      if (trafficPayload.traffic_value) payload.c_utmTerm = trafficPayload.traffic_value;
     }
 
-    console.log('[RD] enviando conversão', Object.fromEntries(params));
+    console.log('[RD] enviando conversão', payload);
 
     var res = await fetch('https://www.rdstation.com.br/api/1.2/conversions', {
       method: 'POST',
-      body: params
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
 
     if (!res.ok) {

@@ -187,15 +187,17 @@
       if (trafficPayload.traffic_value) params.append('c_utmTerm', trafficPayload.traffic_value);
     }
 
-    console.log('[RD] enviando conversão via fetch', Object.fromEntries(params));
+    console.log('[RD] enviando conversão', Object.fromEntries(params));
 
-    await fetch('https://www.rdstation.com.br/api/1.2/conversions', {
+    var res = await fetch('https://www.rdstation.com.br/api/1.2/conversions', {
       method: 'POST',
-      mode: 'no-cors',
       body: params
     });
 
-    console.log('[RD] conversão enviada');
+    if (!res.ok) {
+      throw new Error('[RD] erro ' + res.status);
+    }
+    console.log('[RD] conversão enviada com sucesso');
   }
 
   // ====== INIT ======

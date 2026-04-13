@@ -131,7 +131,7 @@
     if (!response.ok) {
       console.error('[Sync] falha ao atualizar status:', response.status);
     } else {
-      console.log('[Sync] status atualizado para lead', leadId);
+      console.log('[Sync] status atualizado para lead', email);
     }
   }
 

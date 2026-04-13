@@ -106,7 +106,7 @@
         'Content-Type': 'application/json',
         'apikey': SUPABASE_ANON_KEY,
         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Prefer': 'return=representation'
+        'Prefer': 'return=minimal'
       },
       body: JSON.stringify(data)
     });
@@ -114,14 +114,11 @@
     if (!response.ok) {
       throw new Error('Supabase error: ' + response.status);
     }
-
-    var rows = await response.json();
-    return rows[0].id;
   }
 
   // ====== ATUALIZAR SYNC STATUS NO SUPABASE ======
-  async function updateSyncStatus(leadId, syncData) {
-    var response = await fetch(SUPABASE_URL + '/rest/v1/leads?id=eq.' + leadId, {
+  async function updateSyncStatus(email, syncData) {
+    var response = await fetch(SUPABASE_URL + '/rest/v1/leads?email=eq.' + encodeURIComponent(email) + '&order=created_at.desc&limit=1', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -314,8 +311,7 @@
 
         // Atualiza sync status no Supabase (N8N e RD são canais independentes)
         if (supabaseOk) {
-          var leadId = results[0].value;
-          await updateSyncStatus(leadId, {
+          await updateSyncStatus(data.email.trim(), {
             synced_n8n: n8nOk,
             synced_rd: rdOk,
             synced_at: (n8nOk || rdOk) ? new Date().toISOString() : null

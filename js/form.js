@@ -324,6 +324,54 @@
 
         // Sucesso se pelo menos um canal recebeu o lead
         if (supabaseOk || n8nOk || rdOk) {
+          // ====== META PIXEL — Advanced Matching + Lead event ======
+          try {
+            if (typeof fbq === 'function') {
+              var phoneDigits = data.telefone.replace(/\D/g, '');
+              var nameParts = data.nome.trim().split(/\s+/);
+              var firstName = (nameParts[0] || '').toLowerCase();
+              var lastName = (nameParts.slice(1).join(' ') || '').toLowerCase();
+              var cityRaw = data.cidade.split('-')[0] || data.cidade;
+
+              // Re-init com Advanced Matching (fbq hashea SHA-256 client-side)
+              fbq('init', '888359357574471', {
+                em: data.email.trim().toLowerCase(),
+                ph: phoneDigits,
+                fn: firstName,
+                ln: lastName,
+                ct: cityRaw.trim().toLowerCase().replace(/\s+/g, ''),
+                country: 'br'
+              });
+
+              var leadEventId = (self.crypto && self.crypto.randomUUID)
+                ? self.crypto.randomUUID()
+                : 'lead-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10);
+
+              fbq('track', 'Lead', {
+                content_name: RD_EVENT_NAME,
+                content_category: data.segmento.trim(),
+                value: 0.00,
+                currency: 'BRL'
+              }, { eventID: leadEventId });
+
+              console.log('[Pixel] Lead disparado', leadEventId);
+            }
+          } catch (pxErr) {
+            console.warn('[Pixel] falha ao disparar Lead', pxErr);
+          }
+
+          // ====== GTM dataLayer (paridade) ======
+          try {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+              event: 'lead_submit',
+              lead_segmento: data.segmento.trim(),
+              lead_cidade: data.cidade.trim(),
+              lead_source: trafficPayload.traffic_source || null,
+              lead_campaign: trafficPayload.traffic_campaign || null
+            });
+          } catch (dlErr) { /* ignore */ }
+
           form.style.display = 'none';
           successDiv.hidden = false;
         } else {

@@ -132,4 +132,51 @@
       }
     });
   });
+
+  // ====== META PIXEL — ViewContent (form-card no viewport) ======
+  var formCard = document.querySelector('.form-card') || document.getElementById('lead-form');
+  if (formCard && 'IntersectionObserver' in window) {
+    var viewContentFired = false;
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !viewContentFired) {
+          viewContentFired = true;
+          observer.disconnect();
+          try {
+            if (typeof fbq === 'function') {
+              fbq('track', 'ViewContent', {
+                content_name: 'Formulario-LPB2B-Proxxima',
+                content_category: 'lead-form'
+              });
+              console.log('[Pixel] ViewContent disparado');
+            }
+          } catch (e) { /* ignore */ }
+        }
+      });
+    }, { threshold: 0.5 });
+    observer.observe(formCard);
+  }
+
+  // ====== META PIXEL — Contact (mailto / tel / WhatsApp) ======
+  document.addEventListener('click', function (e) {
+    var anchor = e.target.closest && e.target.closest('a[href]');
+    if (!anchor) return;
+    var href = anchor.getAttribute('href') || '';
+    var isContact = /^mailto:/i.test(href)
+      || /^tel:/i.test(href)
+      || /(?:wa\.me|api\.whatsapp\.com|whatsapp:)/i.test(href);
+    if (!isContact) return;
+    try {
+      if (typeof fbq === 'function') {
+        var channel = /^mailto:/i.test(href) ? 'email'
+          : /^tel:/i.test(href) ? 'phone'
+          : 'whatsapp';
+        fbq('track', 'Contact', {
+          content_name: 'cta-' + channel,
+          content_category: channel
+        });
+        console.log('[Pixel] Contact disparado', channel);
+      }
+    } catch (err) { /* ignore */ }
+  }, true);
 })();

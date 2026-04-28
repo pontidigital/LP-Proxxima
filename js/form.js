@@ -168,6 +168,7 @@
 
   // ====== ENVIO PARA RD (API DIRETA) ======
   var RD_TOKEN = '42bed1c28d044f4c597832d3997af8c1';
+  var RD_DEFAULT_SOURCE = 'LP-b2b-proxxima';
 
   async function sendToRD(data, trafficPayload) {
     var payload = {
@@ -178,14 +179,17 @@
       telefone: data.telefone.trim(),
       cf_cnpj: data.cnpj.trim(),
       cf_segmento: data.segmento.trim(),
-      cidade: data.cidade.trim()
+      cidade: data.cidade.trim(),
+      // Origem padrao — sempre presente
+      traffic_source: RD_DEFAULT_SOURCE
     };
 
+    // Sobrescreve com UTMs reais quando disponíveis
     if (trafficPayload) {
-      if (trafficPayload.traffic_source) payload.c_utmSource = trafficPayload.traffic_source;
-      if (trafficPayload.traffic_medium) payload.c_utmMedium = trafficPayload.traffic_medium;
-      if (trafficPayload.traffic_campaign) payload.c_utmCampaign = trafficPayload.traffic_campaign;
-      if (trafficPayload.traffic_value) payload.c_utmTerm = trafficPayload.traffic_value;
+      if (trafficPayload.traffic_source) payload.traffic_source = trafficPayload.traffic_source;
+      if (trafficPayload.traffic_medium) payload.traffic_medium = trafficPayload.traffic_medium;
+      if (trafficPayload.traffic_campaign) payload.traffic_campaign = trafficPayload.traffic_campaign;
+      if (trafficPayload.traffic_value) payload.traffic_value = trafficPayload.traffic_value;
     }
 
     console.log('[RD] enviando conversão', payload);

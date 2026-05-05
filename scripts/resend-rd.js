@@ -60,6 +60,8 @@ function buildRDPayload(lead) {
   if (lead.utm_medium) payload.traffic_medium = lead.utm_medium;
   if (lead.utm_campaign) payload.traffic_campaign = lead.utm_campaign;
   if (lead.utm_term) payload.traffic_value = lead.utm_term;
+  if (lead.gclid) payload.cf_gclid = lead.gclid;
+  if (lead.fbclid) payload.cf_fbclid = lead.fbclid;
 
   return payload;
 }

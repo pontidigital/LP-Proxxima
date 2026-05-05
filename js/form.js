@@ -112,6 +112,27 @@
     });
 
     if (!response.ok) {
+      // Se falhou com colunas extras (gclid/fbclid), tentar sem elas
+      if (response.status === 400 && (data.gclid !== undefined || data.fbclid !== undefined)) {
+        console.warn('[Supabase] retrying without gclid/fbclid columns');
+        var fallbackData = Object.assign({}, data);
+        delete fallbackData.gclid;
+        delete fallbackData.fbclid;
+        var retryRes = await fetch(SUPABASE_URL + '/rest/v1/leads', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify(fallbackData)
+        });
+        if (!retryRes.ok) {
+          throw new Error('Supabase error (retry): ' + retryRes.status);
+        }
+        return;
+      }
       throw new Error('Supabase error: ' + response.status);
     }
   }
@@ -135,6 +156,43 @@
     }
   }
 
+  // ====== NOTIFICACAO POR EMAIL ======
+  var NOTIFICATION_EMAIL = 'dandara.santos@proxxima.net';
+
+  async function sendEmailNotification(data, trafficPayload) {
+    var source = (trafficPayload && trafficPayload.traffic_source) || 'acesso-direto';
+    var medium = (trafficPayload && trafficPayload.traffic_medium) || '';
+    var campaign = (trafficPayload && trafficPayload.traffic_campaign) || '';
+
+    var payload = {
+      to: NOTIFICATION_EMAIL,
+      subject: '[LP Proxxima] Novo lead B2B - ' + data.nome.trim(),
+      lead: {
+        nome: data.nome.trim(),
+        email: data.email.trim(),
+        telefone: data.telefone.trim(),
+        cnpj: data.cnpj.trim(),
+        segmento: data.segmento.trim(),
+        cidade: data.cidade.trim(),
+        origem: source,
+        midia: medium,
+        campanha: campaign,
+        data_hora: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+      }
+    };
+
+    var res = await fetch('https://n8n.proxxima.net/webhook/notificacao-lead-b2b', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      throw new Error('[Email] erro ' + res.status);
+    }
+    console.log('[Email] notificação enviada para', NOTIFICATION_EMAIL);
+  }
+
   // ====== ENVIO PARA N8N (WEBHOOK) ======
   async function sendToN8N(data, trafficPayload) {
     var payload = {
@@ -144,7 +202,8 @@
       cf_cnpj: data.cnpj.trim(),
       cf_segmento: data.segmento.trim(),
       city: data.cidade.trim(),
-      identificador: RD_EVENT_NAME
+      identificador: RD_EVENT_NAME,
+      notify_email: NOTIFICATION_EMAIL
     };
 
     if (trafficPayload) {
@@ -152,6 +211,8 @@
       if (trafficPayload.traffic_medium) payload.traffic_medium = trafficPayload.traffic_medium;
       if (trafficPayload.traffic_campaign) payload.traffic_campaign = trafficPayload.traffic_campaign;
       if (trafficPayload.traffic_value) payload.traffic_value = trafficPayload.traffic_value;
+      if (trafficPayload.gclid) payload.cf_gclid = trafficPayload.gclid;
+      if (trafficPayload.fbclid) payload.cf_fbclid = trafficPayload.fbclid;
     }
 
     var res = await fetch('https://n8n.proxxima.net/webhook/rd-formulario-b2b', {
@@ -190,6 +251,10 @@
       if (trafficPayload.traffic_medium) payload.traffic_medium = trafficPayload.traffic_medium;
       if (trafficPayload.traffic_campaign) payload.traffic_campaign = trafficPayload.traffic_campaign;
       if (trafficPayload.traffic_value) payload.traffic_value = trafficPayload.traffic_value;
+      // Click IDs de midia paga como campos customizados
+      if (trafficPayload.gclid) payload.cf_gclid = trafficPayload.gclid;
+      if (trafficPayload.fbclid) payload.cf_fbclid = trafficPayload.fbclid;
+      if (trafficPayload.msclkid) payload.cf_msclkid = trafficPayload.msclkid;
     }
 
     console.log('[RD] enviando conversão', payload);
@@ -294,19 +359,23 @@
           utm_medium: trafficPayload.traffic_medium || null,
           utm_campaign: trafficPayload.traffic_campaign || null,
           utm_term: trafficPayload.traffic_value || null,
+          gclid: trafficPayload.gclid || null,
+          fbclid: trafficPayload.fbclid || null,
           created_at: new Date().toISOString()
         };
 
-        // Dispara os 3 canais em paralelo — sucesso se ao menos 1 funcionar
+        // Dispara os 4 canais em paralelo — sucesso se ao menos 1 dos 3 principais funcionar
         var results = await Promise.allSettled([
           sendToSupabase(supabaseData),
           sendToN8N(data, trafficPayload),
-          sendToRD(data, trafficPayload)
+          sendToRD(data, trafficPayload),
+          sendEmailNotification(data, trafficPayload)
         ]);
 
         var supabaseOk = results[0].status === 'fulfilled';
         var n8nOk = results[1].status === 'fulfilled';
         var rdOk = results[2].status === 'fulfilled';
+        var emailOk = results[3].status === 'fulfilled';
 
         if (supabaseOk) console.log('[Form] Supabase OK');
         else console.error('[Form] Supabase falhou', results[0].reason);
@@ -316,6 +385,9 @@
 
         if (rdOk) console.log('[Form] RD OK');
         else console.error('[Form] RD falhou', results[2].reason);
+
+        if (emailOk) console.log('[Form] Email notificação OK');
+        else console.error('[Form] Email notificação falhou', results[3].reason);
 
         // Atualiza sync status no Supabase (N8N e RD são canais independentes)
         if (supabaseOk) {
@@ -364,6 +436,20 @@
             console.warn('[Pixel] falha ao disparar Lead', pxErr);
           }
 
+          // ====== GOOGLE ADS CONVERSION ======
+          try {
+            if (typeof gtag === 'function') {
+              gtag('event', 'conversion', {
+                'send_to': 'AW-18020649500',
+                'value': 1.0,
+                'currency': 'BRL'
+              });
+              console.log('[GAds] conversion event dispatched');
+            }
+          } catch (gadsErr) {
+            console.warn('[GAds] failed to dispatch conversion', gadsErr);
+          }
+
           // ====== GTM dataLayer (paridade) ======
           try {
             window.dataLayer = window.dataLayer || [];
@@ -372,7 +458,9 @@
               lead_segmento: data.segmento.trim(),
               lead_cidade: data.cidade.trim(),
               lead_source: trafficPayload.traffic_source || null,
-              lead_campaign: trafficPayload.traffic_campaign || null
+              lead_medium: trafficPayload.traffic_medium || null,
+              lead_campaign: trafficPayload.traffic_campaign || null,
+              lead_gclid: trafficPayload.gclid || null
             });
           } catch (dlErr) { /* ignore */ }
 

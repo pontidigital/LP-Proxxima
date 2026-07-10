@@ -1,14 +1,12 @@
 /**
  * Form Module
- * Validacao, antispam (honeypot + rate limit), envio para Supabase e RD.
+ * Validacao, antispam (honeypot + rate limit), envio para RD e N8N.
  */
 
 (function () {
   'use strict';
 
   // ====== CONFIGURACAO ======
-  var SUPABASE_URL = 'https://xaohhbinykgmzgojszzs.supabase.co';
-  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhhb2hoYmlueWtnbXpnb2pzenpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4Nzc4ODQsImV4cCI6MjA5MDQ1Mzg4NH0.EUfdalAZ0OZXgYM9spaK6SMG4EcseCJx1nwV5ldpMe4';
   var RD_EVENT_NAME = 'Cadastro-LPB2B-Proxxima';
 
   // Rate limit: 1 envio a cada 30 segundos
@@ -96,64 +94,6 @@
     if (digits.length <= 8) return digits.substring(0, 2) + '.' + digits.substring(2, 5) + '.' + digits.substring(5);
     if (digits.length <= 12) return digits.substring(0, 2) + '.' + digits.substring(2, 5) + '.' + digits.substring(5, 8) + '/' + digits.substring(8);
     return digits.substring(0, 2) + '.' + digits.substring(2, 5) + '.' + digits.substring(5, 8) + '/' + digits.substring(8, 12) + '-' + digits.substring(12);
-  }
-
-  // ====== ENVIO PARA SUPABASE ======
-  async function sendToSupabase(data) {
-    var response = await fetch(SUPABASE_URL + '/rest/v1/leads', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify(data)
-    });
-
-    if (!response.ok) {
-      // Se falhou com colunas extras (gclid/fbclid), tentar sem elas
-      if (response.status === 400 && (data.gclid !== undefined || data.fbclid !== undefined)) {
-        console.warn('[Supabase] retrying without gclid/fbclid columns');
-        var fallbackData = Object.assign({}, data);
-        delete fallbackData.gclid;
-        delete fallbackData.fbclid;
-        var retryRes = await fetch(SUPABASE_URL + '/rest/v1/leads', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify(fallbackData)
-        });
-        if (!retryRes.ok) {
-          throw new Error('Supabase error (retry): ' + retryRes.status);
-        }
-        return;
-      }
-      throw new Error('Supabase error: ' + response.status);
-    }
-  }
-
-  // ====== ATUALIZAR SYNC STATUS NO SUPABASE ======
-  async function updateSyncStatus(email, syncData) {
-    var response = await fetch(SUPABASE_URL + '/rest/v1/leads?email=eq.' + encodeURIComponent(email) + '&order=created_at.desc&limit=1', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
-      },
-      body: JSON.stringify(syncData)
-    });
-
-    if (!response.ok) {
-      console.error('[Sync] falha ao atualizar status:', response.status);
-    } else {
-      console.log('[Sync] status atualizado para lead', email);
-    }
   }
 
   // ====== NOTIFICACAO POR EMAIL ======
@@ -347,59 +287,28 @@
         // Get UTM traffic payload
         var trafficPayload = window.ProxximaUTM ? window.ProxximaUTM.getTrafficPayload() : {};
 
-        // Dados para Supabase (inclui UTMs)
-        var supabaseData = {
-          nome: data.nome.trim(),
-          email: data.email.trim(),
-          telefone: data.telefone.trim(),
-          cnpj: data.cnpj.trim(),
-          segmento: data.segmento.trim(),
-          cidade: data.cidade.trim(),
-          utm_source: trafficPayload.traffic_source || null,
-          utm_medium: trafficPayload.traffic_medium || null,
-          utm_campaign: trafficPayload.traffic_campaign || null,
-          utm_term: trafficPayload.traffic_value || null,
-          gclid: trafficPayload.gclid || null,
-          fbclid: trafficPayload.fbclid || null,
-          created_at: new Date().toISOString()
-        };
-
-        // Dispara os 4 canais em paralelo — sucesso se ao menos 1 dos 3 principais funcionar
+        // Dispara os 3 canais em paralelo — sucesso se ao menos 1 dos 2 principais funcionar
         var results = await Promise.allSettled([
-          sendToSupabase(supabaseData),
           sendToN8N(data, trafficPayload),
           sendToRD(data, trafficPayload),
           sendEmailNotification(data, trafficPayload)
         ]);
 
-        var supabaseOk = results[0].status === 'fulfilled';
-        var n8nOk = results[1].status === 'fulfilled';
-        var rdOk = results[2].status === 'fulfilled';
-        var emailOk = results[3].status === 'fulfilled';
-
-        if (supabaseOk) console.log('[Form] Supabase OK');
-        else console.error('[Form] Supabase falhou', results[0].reason);
+        var n8nOk = results[0].status === 'fulfilled';
+        var rdOk = results[1].status === 'fulfilled';
+        var emailOk = results[2].status === 'fulfilled';
 
         if (n8nOk) console.log('[Form] N8N OK');
-        else console.error('[Form] N8N falhou', results[1].reason);
+        else console.error('[Form] N8N falhou', results[0].reason);
 
         if (rdOk) console.log('[Form] RD OK');
-        else console.error('[Form] RD falhou', results[2].reason);
+        else console.error('[Form] RD falhou', results[1].reason);
 
         if (emailOk) console.log('[Form] Email notificação OK');
-        else console.error('[Form] Email notificação falhou', results[3].reason);
-
-        // Atualiza sync status no Supabase (N8N e RD são canais independentes)
-        if (supabaseOk) {
-          await updateSyncStatus(data.email.trim(), {
-            synced_n8n: n8nOk,
-            synced_rd: rdOk,
-            synced_at: (n8nOk || rdOk) ? new Date().toISOString() : null
-          });
-        }
+        else console.error('[Form] Email notificação falhou', results[2].reason);
 
         // Sucesso se pelo menos um canal recebeu o lead
-        if (supabaseOk || n8nOk || rdOk) {
+        if (n8nOk || rdOk) {
           // ====== META PIXEL — Advanced Matching + Lead event ======
           try {
             if (typeof fbq === 'function') {
